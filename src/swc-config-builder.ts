@@ -1,7 +1,8 @@
 import * as ts from "typescript";
 import type SWCTypes from "@swc/core";
 import {SWCConversionError, SWCOverrideError} from "./errors";
-import {deepMerge, moduleKindToSWC, scriptTargetToSWC} from "./utils";
+import {deepMerge, moduleKindToSWC, scriptTargetToSWC, Logger} from "./utils";
+
 
 interface SWCOptions {
   swc: any;
@@ -168,13 +169,12 @@ class SwcConfigBuilder {
    * Generates the SwcConfigBuilder configuration from the TypeScript configuration.
    *
    * @param {ts.CompilerOptions} tsconfig - The TypeScript configuration.
-   * @param {boolean} [verbose=false] - Whether to enable verbose logging.
    * @returns {any} - The generated SwcConfigBuilder configuration.
    * @throws {SWCConversionError} - If an error occurs during the conversion process.
    * @example
    * const generatedSwcConfig = SwcConfigBuilder.generateSwcConfig(tsconfig, true);
    */
-  static generateSwcConfig(tsconfig: ts.CompilerOptions, verbose = false): SWCTypes.Options {
+  static generateSwcConfig(tsconfig: ts.CompilerOptions): SWCTypes.Options {
     try {
       const isReact = Boolean(this.reactConfig(tsconfig));
       const moduleType = this.moduleType(tsconfig);
@@ -246,9 +246,10 @@ class SwcConfigBuilder {
         });
       }
 
-      this.log("Generated SwcConfigBuilder configuration.", verbose);
+      Logger.info("Generated Swc configuration!");
       return JSON.parse(JSON.stringify(config));
     } catch (error) {
+      Logger.error("Failed to generate Swc configuration")
       throw new SWCConversionError(
         `Failed to generate SWC configuration: ${(error as Error)?.message}`,
       );
@@ -256,24 +257,9 @@ class SwcConfigBuilder {
   }
 
   /**
-   * Logs a message if verbose mode is enabled.
-   *
-   * @param {string} message - The message to log.
-   * @param {boolean} verbose - Whether verbose logging is enabled.
-   * @example
-   * SwcConfigBuilder.log('Generated SwcConfigBuilder configuration.', true);
-   */
-  static log(message: string, verbose: boolean): void {
-    if (verbose) {
-      console.log(message);
-    }
-  }
-
-  /**
    * Converts the TypeScript configuration to SwcConfigBuilder configuration.
    *
    * @param {ts.CompilerOptions} tsconfig - The TypeScript configuration to convert.
-   * @param {boolean} [verbose=false] - Whether to enable verbose logging.
    * @returns {SwcConfigBuilder} - The converted SwcConfigBuilder configuration.
    * @throws {SWCConversionError} - If an error occurs during the conversion process.
    * @example
@@ -286,14 +272,14 @@ class SwcConfigBuilder {
    */
   static fromTsConfig(
     tsconfig: ts.CompilerOptions,
-    verbose = false,
   ): SwcConfigBuilder {
     try {
-      this.log("Starting conversion...", verbose);
+      Logger.info("Starting swc conversion...")
       return new SwcConfigBuilder({
-        swc: this.generateSwcConfig(tsconfig, verbose),
+        swc: this.generateSwcConfig(tsconfig),
       });
     } catch (error) {
+      Logger.error("Failed to convert TypeScript configuration to Swc configuration")
       throw new SWCConversionError(
         `Failed to convert TypeScript configuration to SWC configuration: ${
           (error as Error).message
@@ -306,7 +292,6 @@ class SwcConfigBuilder {
    * Overrides the SwcConfigBuilder configuration with additional SwcConfigBuilder-specific options.
    *
    * @param {any} swcOptions - Additional SwcConfigBuilder-specific options to include.
-   * @param {boolean} [verbose=false] - Whether to enable verbose logging.
    * @returns {any} - The overridden SwcConfigBuilder configuration.
    * @throws {SWCOverrideError} - If an error occurs during the override process.
    * @example
@@ -321,13 +306,14 @@ class SwcConfigBuilder {
    * };
    * const overriddenConfig = swcConfig.overrides(swcOptions);
    */
-  overrides(swcOptions: any = {}, verbose = false): SWCTypes.Options {
+  overrides(swcOptions: any = {}): SWCTypes.Options {
     try {
-      SwcConfigBuilder.log("Merging SwcConfigBuilder options...", verbose);
+      Logger.info("Merging SwcConfigBuilder options...");
       const result = deepMerge(this._swc, swcOptions);
-      SwcConfigBuilder.log("Conversion complete.", verbose);
+      Logger.info("Conversion complete.");
       return result;
     } catch (error) {
+        Logger.error("Failed to override Swc configuration")
       throw new SWCOverrideError(
         `Failed to override SWC configuration: ${(error as Error).message}`,
       );

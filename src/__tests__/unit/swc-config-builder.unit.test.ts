@@ -399,32 +399,6 @@ describe("SwcConfigBuilder", () => {
     });
   });
 
-  describe("log", () => {
-
-    afterEach(() => {
-      jest.restoreAllMocks();
-    });
-
-    it("should log the message if verbose mode is enabled", () => {
-      const verbose = true;
-      const message = "Test message";
-      const consoleSpy = jest.spyOn(console, "log");
-
-      SwcConfigBuilder.log(message, verbose);
-
-      expect(consoleSpy).toHaveBeenCalledWith(message);
-    });
-
-    it("should not log the message if verbose mode is disabled", () => {
-      const verbose = false;
-      const message = "Test message";
-      const consoleSpy = jest.spyOn(console, "log");
-
-      SwcConfigBuilder.log(message, verbose);
-
-      expect(consoleSpy).not.toHaveBeenCalled();
-    });
-  });
 
   describe("fromTsConfig", () => {
     afterEach(() => {
@@ -445,7 +419,6 @@ describe("SwcConfigBuilder", () => {
       expect(result).toBeInstanceOf(SwcConfigBuilder);
       expect(SwcConfigBuilder.generateSwcConfig).toHaveBeenCalledWith(
         tsconfig.compilerOptions,
-        false,
       );
     });
 
@@ -498,7 +471,7 @@ describe("SwcConfigBuilder", () => {
       jest.spyOn(utils, "deepMerge").mockReturnValue(mergedOptions);
 
       const swc = new SwcConfigBuilder({ swc: {} });
-      const result = swc.overrides(swcOptions, false);
+      const result = swc.overrides(swcOptions);
 
       expect(result).toBe(mergedOptions);
       expect(utils.deepMerge).toHaveBeenCalledWith({}, swcOptions);
@@ -514,7 +487,7 @@ describe("SwcConfigBuilder", () => {
       const swc = new SwcConfigBuilder({ swc: {} });
 
       expect(() => {
-        swc.overrides(swcOptions, false);
+        swc.overrides(swcOptions);
       }).toThrowError(SWCOverrideError);
     });
 
@@ -561,7 +534,7 @@ describe("SwcConfigBuilder", () => {
       jest.spyOn(utils, "deepMerge").mockReturnValue(mergedOptions);
 
       const swc = new SwcConfigBuilder({ swc: initialConfig });
-      const result = swc.overrides(swcOptions, false);
+      const result = swc.overrides(swcOptions);
 
       expect(result).toBe(mergedOptions);
       expect(utils.deepMerge).toHaveBeenCalledWith(initialConfig, swcOptions);
@@ -599,7 +572,7 @@ describe("SwcConfigBuilder", () => {
       jest.spyOn(utils, "deepMerge").mockReturnValue(mergedOptions);
 
       const swc = new SwcConfigBuilder({ swc: initialConfig });
-      const result = swc.overrides(swcOptions, false);
+      const result = swc.overrides(swcOptions);
 
       expect(result).toBe(mergedOptions);
       expect(utils.deepMerge).toHaveBeenCalledWith(initialConfig, swcOptions);
@@ -639,7 +612,7 @@ describe("SwcConfigBuilder", () => {
       const swc = new SwcConfigBuilder({ swc: initialConfig });
 
       expect(() => {
-        swc.overrides(swcOptions, false);
+        swc.overrides(swcOptions);
       }).toThrowError(SWCOverrideError);
     });
 
@@ -666,7 +639,7 @@ describe("SwcConfigBuilder", () => {
       const swc = new SwcConfigBuilder({ swc: initialConfig });
 
       expect(() => {
-        swc.overrides(swcOptions, false);
+        swc.overrides(swcOptions);
       }).toThrowError(SWCOverrideError);
     });
   });

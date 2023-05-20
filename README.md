@@ -84,7 +84,7 @@ for (const [path, config] of Object.entries(configs)) {
 ```
 
 ## Assumptions and Inference
-`tswig` is designed to produce a SWC configuration that's as close as possible to the provided TSConfig. However, not all TSConfig options have direct equivalents in SWC. In these cases, the converter uses related TSConfig options and SWC's features to make intelligent assumptions.
+`tswig` is designed to produce a SWC configuration that's as close as possible to the provided TSConfig. However, not all TSConfig options have direct equivalents in SWC. In these cases, the converter uses related TSConfig options and SWC's features to make intelligent assumptions. You can see the complete assumption list with examples in the [assumptions design](./ASSUMPTIONS_INFERENCE.md) file.
 
 Here are a few examples:
 
@@ -103,6 +103,9 @@ We make no assumptions about your runtime environment. If you want to have envir
 We strive to make `tswig` as accurate and helpful as possible. However, due to the differences between TypeScript and SWC, there may be edge cases where the converter's assumptions don't match the user's intentions. If you encounter such cases, we encourage you to provide feedback and contribute to the project.
 
 You can use the swcOptions parameter to provide additional SWC-specific options and override any settings from the TSConfig conversion. This gives you the ultimate control over your SWC configuration.
+
+### Want to contribute?
+If you want to contribute to the project, please read the [contributing guidelines](./CONTRIBUTING.md).
 
 ## Future Enhancements
 
