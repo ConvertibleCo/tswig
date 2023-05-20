@@ -5,8 +5,8 @@
   "main": "lib/index.js",
   "scripts": {
     "clean": "rm -rf lib",
-    "build": "swc --out-dir lib src",
-    "prepare": "npm run build && npm run generate:types",
+    "swc": "swc --out-dir lib src",
+    "build": "npm run build && npm run generate:types",
     "prepublishOnly": "npm audit",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
