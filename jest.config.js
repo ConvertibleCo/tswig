@@ -34,6 +34,7 @@ module.exports = {
       tsconfig: generateTemporaryTsConfig(),
     }],
   },
+  coverageProvider: "v8",
   collectCoverage: false,
   coverageDirectory: "<rootDir>/coverage",
   collectCoverageFrom: [
