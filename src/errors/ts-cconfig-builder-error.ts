@@ -1,7 +1,7 @@
 class TypeScriptConfigBuilderError extends Error {
   constructor(message?: string) {
     super(message);
-    this.name = 'TypeScriptConfigBuilderError';
+    this.name = "TypeScriptConfigBuilderError";
   }
 }
 

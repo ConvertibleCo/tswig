@@ -3,46 +3,6 @@ import SwcConfigBuilder from "../../swc-config-builder";
 import * as utils from "../../utils";
 import { SWCConversionError, SWCOverrideError } from "../../errors";
 
-// Mock the 'typescript' module
-jest.mock("typescript", () => ({
-  ModuleKind: {
-    None: 0,
-    CommonJS: 1,
-    AMD: 2,
-    UMD: 3,
-    System: 4,
-    ES2015: 5,
-    ESNext: 99,
-  },
-  ScriptTarget: {
-    ES3: 0,
-    ES5: 1,
-    ES2015: 2,
-    ES2016: 3,
-    ES2017: 4,
-    ES2018: 5,
-    ES2019: 6,
-    ES2020: 7,
-    ES2021: 8,
-    ESNext: 99,
-    JSON: 100,
-    Latest: 99,
-  },
-  JsxEmit: {
-    None: 0,
-    Preserve: 1,
-    React: 2,
-    ReactNative: 3,
-    ReactJSX: 4,
-    ReactJSXDev: 5,
-  },
-  ModuleResolutionKind: {
-    Classic: 1,
-    NodeJs: 2,
-    Node10: 2,
-  },
-}));
-
 describe("SwcConfigBuilder", () => {
   describe("esModuleInterop", () => {
 
@@ -245,7 +205,7 @@ describe("SwcConfigBuilder", () => {
 
       const result = SwcConfigBuilder.reactConfig(tsconfig.compilerOptions);
 
-      expect(result).toEqual({})
+      expect(result).toEqual({});
     });
   });
 
@@ -347,9 +307,9 @@ describe("SwcConfigBuilder", () => {
           strictMode: true,
         },
         jsc: {
-        externalHelpers: false,
-        keepClassNames: true,
-        target: "es2018",
+          externalHelpers: false,
+          keepClassNames: true,
+          target: "es2018",
           parser: {
             syntax: "typescript",
             tsx: true,

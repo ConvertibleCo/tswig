@@ -249,7 +249,7 @@ class SwcConfigBuilder {
       Logger.info("Generated Swc configuration!");
       return JSON.parse(JSON.stringify(config));
     } catch (error) {
-      Logger.error("Failed to generate Swc configuration")
+      Logger.error("Failed to generate Swc configuration");
       throw new SWCConversionError(
         `Failed to generate SWC configuration: ${(error as Error)?.message}`,
       );
@@ -274,12 +274,12 @@ class SwcConfigBuilder {
     tsconfig: ts.CompilerOptions,
   ): SwcConfigBuilder {
     try {
-      Logger.info("Starting swc conversion...")
+      Logger.info("Starting swc conversion...");
       return new SwcConfigBuilder({
         swc: this.generateSwcConfig(tsconfig),
       });
     } catch (error) {
-      Logger.error("Failed to convert TypeScript configuration to Swc configuration")
+      Logger.error("Failed to convert TypeScript configuration to Swc configuration");
       throw new SWCConversionError(
         `Failed to convert TypeScript configuration to SWC configuration: ${
           (error as Error).message
@@ -313,7 +313,7 @@ class SwcConfigBuilder {
       Logger.info("Conversion complete.");
       return result;
     } catch (error) {
-        Logger.error("Failed to override Swc configuration")
+      Logger.error("Failed to override Swc configuration");
       throw new SWCOverrideError(
         `Failed to override SWC configuration: ${(error as Error).message}`,
       );

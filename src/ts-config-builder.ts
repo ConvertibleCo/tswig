@@ -1,9 +1,9 @@
-import * as ts from "typescript";
-import * as fs from "fs";
-import * as os from "os";
-import * as path from "path";
-import { Logger } from './utils';
-import { TypeScriptConfigBuilderError, FileSystemError } from './errors';
+import {readConfigFile, sys, parseJsonSourceFileConfigFileContent, TsConfigSourceFile, flattenDiagnosticMessageText} from "typescript";
+import { writeFileSync, unlinkSync } from "fs";
+import {tmpdir} from "os";
+import {join} from "path";
+import { Logger } from "./utils";
+import { TypeScriptConfigBuilderError, FileSystemError } from "./errors";
 
 /**
  * Manages TypeScript configurations.
@@ -31,9 +31,9 @@ class TypeScriptConfigBuilder {
     if (typeof config === "string") {
       this.configFileName = config;
     } else {
-      this.tmpFile = path.join(os.tmpdir(), "tmp.tsconfig.json");
+      this.tmpFile = join(tmpdir(), "tmp.tsconfig.json");
       try {
-        fs.writeFileSync(this.tmpFile, JSON.stringify(config), {
+        writeFileSync(this.tmpFile, JSON.stringify(config), {
           encoding: "utf8",
         });
         this.configFileName = this.tmpFile;
@@ -48,11 +48,11 @@ class TypeScriptConfigBuilder {
   /**
    * Reads a TypeScript configuration file.
    * @private
-   * @returns {{ config?: any, error?: ts.Diagnostic }} The configuration object or an error object.
+   * @returns {{ config?: any, error?: Diagnostic }} The configuration object or an error object.
    */
   private readConfigFile() {
     try {
-      return ts.readConfigFile(this.configFileName, ts.sys.readFile);
+      return readConfigFile(this.configFileName, sys.readFile);
     } catch (err) {
       Logger.error("Error reading the config file.");
       throw new TypeScriptConfigBuilderError(`Error reading the config file: ${(err as Error).message}`);
@@ -63,17 +63,17 @@ class TypeScriptConfigBuilder {
    * Parses the content of the configuration file.
    * @private
    * @param {any} config - The configuration object.
-   * @returns {ts.ParsedCommandLine} The parsed command-line options.
+   * @returns {ParsedCommandLine} The parsed command-line options.
    */
-  private parseJsonConfigFileContent(config: ts.TsConfigSourceFile) {
+  private parseJsonConfigFileContent(config: TsConfigSourceFile) {
     try {
       const host = {
-        useCaseSensitiveFileNames: ts.sys.useCaseSensitiveFileNames,
-        readDirectory: ts.sys.readDirectory,
-        fileExists: ts.sys.fileExists,
-        readFile: ts.sys.readFile,
+        useCaseSensitiveFileNames: sys.useCaseSensitiveFileNames,
+        readDirectory: sys.readDirectory,
+        fileExists: sys.fileExists,
+        readFile: sys.readFile,
       };
-      return ts.parseJsonSourceFileConfigFileContent(
+      return parseJsonSourceFileConfigFileContent(
         config,
         host,
         "./",
@@ -88,7 +88,7 @@ class TypeScriptConfigBuilder {
 
   /**
    * Loads and parses TypeScript configurations.
-   * @returns {ts.CompilerOptions} The compiler options from the configuration file.
+   * @returns {CompilerOptions} The compiler options from the configuration file.
    * @example
    * const builder = new TypeScriptConfigBuilder();
    * const compilerOptions = builder.loadConfigurations();
@@ -97,7 +97,7 @@ class TypeScriptConfigBuilder {
     const { config, error } = this.readConfigFile();
     if (error) {
       this.cleanupTmpFile();
-      throw new TypeScriptConfigBuilderError(ts.flattenDiagnosticMessageText(error.messageText, "\n"));
+      throw new TypeScriptConfigBuilderError(flattenDiagnosticMessageText(error.messageText, "\n"));
     }
     Logger.info(`Config file ${this.configFileName} read successfully.`);
     const parsedConfig = this.parseJsonConfigFileContent(config);
@@ -116,7 +116,7 @@ class TypeScriptConfigBuilder {
     const { config, error } = this.readConfigFile();
     if (error) {
       this.cleanupTmpFile();
-      throw new TypeScriptConfigBuilderError(ts.flattenDiagnosticMessageText(error.messageText, "\n"));
+      throw new TypeScriptConfigBuilderError(flattenDiagnosticMessageText(error.messageText, "\n"));
     }
     Logger.info(`Config file ${this.configFileName} read successfully.`);
     const parsedConfig = this.parseJsonConfigFileContent(config);
@@ -131,7 +131,7 @@ class TypeScriptConfigBuilder {
   private cleanupTmpFile() {
     if (this.tmpFile) {
       try {
-        fs.unlinkSync(this.tmpFile);
+        unlinkSync(this.tmpFile);
         Logger.info(`Temporary file ${this.tmpFile} deleted.`);
       } catch (err) {
         Logger.error("Error deleting the temporary file.");
