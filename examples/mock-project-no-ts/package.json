@@ -1,0 +1,11 @@
+{
+  "name": "mock-project-no-ts",
+  "version": "1.0.0",
+  "scripts": {
+    "build": "swc"
+  },
+  "devDependencies": {
+    "@convertible/tswig": "^1.0.0",
+    "swc": "^1.0.0"
+  }
+}
