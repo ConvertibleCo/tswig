@@ -33,54 +33,76 @@ For detailed insight into the conversion process, a verbose mode is available th
 ## Installation
 
 ```bash
-  npm install @convertible/tswig --save-dev
+npm install @convertible/tswig --save-dev
 ```
 ```bash
-  yarn add @convertible/tswig --dev
+yarn add @convertible/tswig --dev
 ```
 ```bash
-  pnpm add @convertible/tswig --save-dev
+pnpm add @convertible/tswig --save-dev
 ```
 
 ## Usage
 
-### Conversion
+`tswig` is seriously simple.
+
 ```javascript
 // swc.config.js
 const tswig = require('@convertible/tswig');
 
-const pathToTsconfig = './tsconfig.json';
-
-const swcOptions = {
-    // Any additional SWC-specific options
-};
-
-process.env.TSWIG_VERBOSE = true; // Set to true for verbose logging
-
-const swcConfig = tswig.Convert(pathToTsconfig, swcOptions);
-
-module.exports = swcConfig;
-
-----
-
-// alternatively you can pass a parsed tsconfig object
-const tsconfig = {
-    // your tsconfig object
-}
-
-const swcConfig = tswig.Convert(tsconfig, swcOptions);
+module.exports = tswig.Convert();
 ```
-### Generating Configs for Project References
-The Generate method returns an object where each key is a project reference path and its value is the corresponding SWC configuration.
+
+`tswig` is also seriously flexible.
 
 ```javascript
-const configs = tswig.Generate(tsconfig, swcOptions, verbose);
+// swc.config.js
+const tswig = require('@convertible/tswig');
 
-for (const [path, config] of Object.entries(configs)) {
-    console.log(`SWC config for ${path}:`, config);
-    // you can write the config to a file, or use it in any other way
-    // e.g. fs.writeFileSync(`${path}/swc.config.json`, JSON.stringify(config, null, "\t"));
-}
+module.exports = tswig.Convert({
+    tsConfig: './tsconfig.json',
+    swcOptions: {
+        jsc: {
+            parser: {
+                syntax: 'typescript',
+                tsx: true,
+                dynamicImport: true,
+                decorators: true,
+                privateMethod: true,
+                classPrivateProperty: true,
+                exportDefaultFrom: true,
+                exportNamespaceFrom: true,
+                nullishCoalescing: true,
+                optionalChaining: true,
+            },
+            transform: {
+                react: {
+                    runtime: 'automatic',
+                    pragma: 'React.createElement',
+                    pragmaFrag: 'React.Fragment',
+                    throwIfNamespace: true,
+                    development: false,
+                    useBuiltins: false,
+                },
+            },
+        },
+    },
+});
+```
+
+## Examples
+
+To see complete examples of `tswig` in action, check out the [examples](./examples) folder. These are the same projects we use to run our e2e tests.
+
+```
+examples
+    ├── ts-3
+    ├── ts-4
+    ├── ts-5
+    ├── monorepo
+    ├── project-references
+    ├── bazel
+    └── complex-overrides
 ```
 
 ## Assumptions and Inference

@@ -6,7 +6,7 @@ import glob from 'glob';
 
 // Helper function to execute a shell command
 function execShellCommand(cmd: string): Promise<string> {
-  return new Promise<string>((resolve, reject) => {
+  return new Promise<string>((resolve) => {
     exec(cmd, (error, stdout, stderr) => {
       if (error) {
         console.warn(error);
@@ -37,7 +37,7 @@ function hashDirectoryContent(directoryPath: string): string {
 
 // Helper function to get TypeScript version from environment variable
 function getTypeScriptVersion(): string {
-  return process.env.TSWIG_E2E_TS_VERSION || '5.0.4';
+  return process.env["TSWIG_E2E_TS_VERSION"] || '5.0.4';
 }
 
 // Helper function to rewrite tsconfig with "extends" as an array for TypeScript 5+

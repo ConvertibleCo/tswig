@@ -6,29 +6,27 @@ on:
       - main
 
 jobs:
-  build:
+  test:
     runs-on: ubuntu-latest
     strategy:
-      matrix:
-        node-version: [12.x, 14.x, 16.x]
-        typescript-version: ['3.9.10', '4.0.8', '4.1.6', '4.2.5', '4.3.5', '4.4.4', '5.0.4']
+      fail-fast: false
 
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
 
-      - name: Use Node.js ${{ matrix.node-version }}
-        uses: actions/setup-node@v2
+      - name: Use Node.js 18
+        uses: actions/setup-node@v3
         with:
-          node-version: ${{ matrix.node-version }}
+          node-version: 18.x
 
       - name: Install pnpm
-        run: curl -f https://get.pnpm.io/v6.js | node - add --global pnpm
+        run: curl -f https://get.pnpm.io/v8.js | node - add --global pnpm
 
       - name: Install dependencies
         run: pnpm install
 
-      - name: Install Typescript ${{ matrix.typescript-version }}
-        run: pnpm add typescript@${{ matrix.typescript-version }}
+      - name: Run unit and integration tests
+        run: pnpm run test:unit && pnpm run test:integration
 
       - name: Run tests with coverage
         run: pnpm run test:coverage
@@ -41,3 +39,44 @@ jobs:
           flags: unittests
           name: codecov-umbrella
           fail_ci_if_error: true
+
+      - name: Build package
+        run: pnpm run build
+
+  e2e:
+    needs: test
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        node-version: [14.x, 16.x, 18.x, 20.x]
+        typescript-version: ["3.0.3", "3.1.8", "3.2.4", "3.3.3", "3.4.5", "3.5.3", "3.6.5", "3.7.7", "3.8.3", "3.9.10", "4.0.8", "4.1.6", "4.2.4", "4.3.5", "4.4.4", "4.5.5", "4.6.4", "4.7.4", "4.8.4", "4.9.5", "5.0.4"]
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v3
+        with:
+          node-version: ${{ matrix.node-version }}
+
+      ## See PNPM Version Matrix: https://pnpm.io/installation#compatibility
+      - name: Install pnpm
+        run: |
+          if [[ "${{ matrix.node-version }}" == "14.x" ]]; then
+            curl -f https://get.pnpm.io/v7.js | node - add --global pnpm
+          else
+            curl -f https://get.pnpm.io/v8.js | node - add --global pnpm
+          fi
+
+      - name: Install dependencies
+        run: pnpm install
+
+      - name: Install Typescript ${{ matrix.typescript-version }}
+        run: pnpm add typescript@${{ matrix.typescript-version }} --no-save
+
+      - name: Install built package
+        run: pnpm install path-to-your-package.tgz
+
+      - name: Run e2e tests
+        run: pnpm run test:e2e
