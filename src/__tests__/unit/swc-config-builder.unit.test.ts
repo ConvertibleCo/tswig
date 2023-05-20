@@ -196,6 +196,64 @@ describe("SwcConfigBuilder", () => {
       });
     });
 
+    it("should return the default React configuration if JSX is enabled with no settings", () => {
+      const tsconfig = {
+        compilerOptions: {
+          jsx: ts.JsxEmit.ReactJSX,
+        },
+      };
+
+      const result = SwcConfigBuilder.reactConfig(tsconfig.compilerOptions);
+
+      expect(result).toEqual({
+        throwIfNamespace: false,
+        development: false,
+        pragma: "React.createElement",
+        pragmaFrag: "React.Fragment",
+        importSource: "",
+        runtime: "automatic",
+      });
+    });
+
+    it("should return return in development if in dev", () => {
+      const tsconfig = {
+        compilerOptions: {
+          jsx: ts.JsxEmit.ReactJSXDev,
+        },
+      };
+
+      const result = SwcConfigBuilder.reactConfig(tsconfig.compilerOptions);
+
+      expect(result).toEqual({
+        throwIfNamespace: false,
+        development: true,
+        pragma: "React.createElement",
+        pragmaFrag: "React.Fragment",
+        importSource: "",
+        runtime: "automatic",
+      });
+    });
+
+    it("should return return in classic jsx is React", () => {
+      const tsconfig = {
+        compilerOptions: {
+          jsx: ts.JsxEmit.React,
+        },
+      };
+
+      const result = SwcConfigBuilder.reactConfig(tsconfig.compilerOptions);
+
+      expect(result).toEqual({
+        throwIfNamespace: false,
+        development: false,
+        pragma: "React.createElement",
+        pragmaFrag: "React.Fragment",
+        importSource: "",
+        runtime: "classic",
+      });
+    });
+
+
     it("should return undefined if JSX is disabled", () => {
       const tsconfig = {
         compilerOptions: {
