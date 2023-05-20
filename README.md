@@ -1,4 +1,4 @@
-# `tswig` - TypeScript to SwcConfigBuilder Config Converter
+# `tswig` - TypeScript to SwcConfigBuilder Config Converter [NOT STABLE]
 [![npm version](https://badge.fury.io/js/swc-config-converter.svg)](https://badge.fury.io/js/swc-config-converter)
 [![Build Status](https://travis-ci.com/swc-project/swc-config-converter.svg?branch=master)](https://travis-ci.com/swc-project/swc-config-converter)
 [![Coverage Status](https://coveralls.io/repos/github/swc-project/swc-config-converter/badge.svg?branch=master)](https://coveralls.io/github/swc-project/swc-config-converter?branch=master)
