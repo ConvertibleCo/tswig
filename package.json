@@ -1,5 +1,5 @@
 {
-  "name": "tswig",
+  "name": "@convertible/tswig",
   "version": "0.0.1",
   "description": "tswig is a utility to convert TypeScript configurations (tsconfig) to SWC configurations, making it easier to transition from TypeScript to SWC. It supports intelligent 1:1 conversion, SWC-specific options, and TypeScript project references.",
   "main": "lib/index.js",
@@ -10,13 +10,15 @@
     "prepublishOnly": "npm audit",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
+    "snyk": "snyk",
     "test": "jest",
     "test:watch": "jest --watch",
     "test:coverage": "pnpm run test:unit --coverage",
     "test:unit": "jest --testMatch='**/__tests__/unit/**/*.unit.test.(ts|tsx)'",
     "test:integration": "jest --testMatch='**/__tests__/integration/**/*.integration.test.(ts|tsx)'",
     "test:e2e": "jest --testMatch='**/__tests__/e2e/**/*.e2e.test.(ts|tsx)'",
-    "generate:types": "tsc --declaration"
+    "generate:types": "tsc --declaration",
+    "generate:docs": "typedoc"
   },
   "keywords": [
     "swc",
@@ -54,8 +56,10 @@
     "eslint-plugin-prettier": "^4.2.1",
     "jest": "^29.5.0",
     "prettier": "^2.8.8",
+    "snyk": "^1.1159.0",
     "ts-jest": "^29.1.0",
     "ts-node": "^10.9.1",
+    "typedoc": "^0.24.7",
     "typescript": "^5.0.4"
   },
   "exports": {

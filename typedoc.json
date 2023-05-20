@@ -1,0 +1,7 @@
+{
+  "inputFiles": ["./src"],
+  "out": "docs",
+  "exclude": ["coverage", "node_modules", "**/*.test.ts", "*.js", "*.json",  "*.tsbuildinfo"],
+  "name": "tswig",
+  "readme": "README.md"
+}
