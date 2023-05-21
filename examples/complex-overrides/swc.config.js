@@ -8,6 +8,7 @@ const tsconfig = {
     "sourceMap": true,
     "declaration": true,
     "strict": true,
+    "alwaysStrict": true,
     "esModuleInterop": true,
     "baseUrl": "./src",
     "noUnusedLocals": true,
@@ -33,18 +34,11 @@ const swcOptions = {
       "type": "commonjs"
     },
     "env": {
-      "browser": true,
       "node": true
     },
     "sourceMaps": true,
-    "minify": {
-      "compress": {
-        "global_defs": {
-          "@swc/helpers/globalThis": "globalThis"
-        }
-      }
-    }
-  }
-;
+    "minify": true
+  };
 
-module.exports = tswig.Covert(tsconfig, swcOptions);
+
+console.log(tswig.convert(tsconfig, swcOptions).asJSONString())

@@ -2,7 +2,7 @@ import fs from 'fs';
 import path from 'path';
 import { exec } from 'child_process';
 import crypto from 'crypto';
-import glob from 'glob';
+import { globSync } from 'glob';
 
 // Helper function to execute a shell command
 function execShellCommand(cmd: string): Promise<string> {
@@ -21,7 +21,7 @@ function hashDirectoryContent(directoryPath: string): string {
   const hash = crypto.createHash('sha256');
 
   // Get all files in the directory
-  const files = glob.sync(path.join(directoryPath, '**', '*'));
+  const files = globSync(path.join(directoryPath, '**', '*'));
 
   // Sort the files to ensure consistent hashing
   files.sort();
@@ -40,20 +40,10 @@ function getTypeScriptVersion(): string {
   return process.env["TSWIG_E2E_TS_VERSION"] || '5.0.4';
 }
 
-// Helper function to rewrite tsconfig with "extends" as an array for TypeScript 5+
-function rewriteTsconfig(projectPath: string): void {
-  const tsconfigPath = path.join(projectPath, 'tsconfig.json');
-  const tsconfig = JSON.parse(fs.readFileSync(tsconfigPath, 'utf-8'));
-
-  if (tsconfig.compilerOptions?.target?.startsWith('5')) {
-    tsconfig.extends = Array.isArray(tsconfig.extends) ? tsconfig.extends : [tsconfig.extends];
-    fs.writeFileSync(tsconfigPath, JSON.stringify(tsconfig, null, 2));
-  }
-}
-
 describe('End-to-End Tests for tswig', () => {
   // Paths to mock projects
-  const mockProjectsPath = path.join(__dirname, 'mockProjects');
+  const root = path.join(__dirname, '../../../');
+  const mockProjectsPath = path.join(root, 'examples');
   const mockProjects = fs.readdirSync(mockProjectsPath);
 
   // Read TypeScript version from environment variable
@@ -62,11 +52,6 @@ describe('End-to-End Tests for tswig', () => {
   // Run a test for each mock project
   mockProjects.forEach((mockProject) => {
     const projectPath = path.join(mockProjectsPath, mockProject);
-
-    beforeAll(async () => {
-      // Rewrite tsconfig with "extends" as an array for TypeScript 5+
-      rewriteTsconfig(projectPath);
-    });
 
     it(`should correctly convert TypeScript to JavaScript in ${mockProject}`, async () => {
       // Install the package and run the build command in the mock project

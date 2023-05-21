@@ -386,13 +386,6 @@ describe("SwcConfigBuilder", () => {
               throwIfNamespace: false,
               development: false,
             },
-            optimizer: {
-              globals: {
-                vars: {
-                  __NULLABLE_CHECK__: true,
-                },
-              },
-            },
           },
         },
         sourceMaps: true,
@@ -403,7 +396,7 @@ describe("SwcConfigBuilder", () => {
     it("should throw SwcConfigBuilderConversionError if an error occurs during the conversion process", () => {
       const tsconfig = {
         compilerOptions: {
-          strict: true,
+          allowJs: true,
         },
       };
 
@@ -491,7 +484,7 @@ describe("SwcConfigBuilder", () => {
       const swc = new SwcConfigBuilder({ swc: {} });
       const result = swc.overrides(swcOptions);
 
-      expect(result).toBe(mergedOptions);
+      expect(result.toObject()).toBe(mergedOptions);
       expect(utils.deepMerge).toHaveBeenCalledWith({}, swcOptions);
     });
 
@@ -554,7 +547,7 @@ describe("SwcConfigBuilder", () => {
       const swc = new SwcConfigBuilder({ swc: initialConfig });
       const result = swc.overrides(swcOptions);
 
-      expect(result).toBe(mergedOptions);
+      expect(result.toObject()).toBe(mergedOptions);
       expect(utils.deepMerge).toHaveBeenCalledWith(initialConfig, swcOptions);
     });
 
@@ -592,7 +585,7 @@ describe("SwcConfigBuilder", () => {
       const swc = new SwcConfigBuilder({ swc: initialConfig });
       const result = swc.overrides(swcOptions);
 
-      expect(result).toBe(mergedOptions);
+      expect(result.toObject()).toBe(mergedOptions);
       expect(utils.deepMerge).toHaveBeenCalledWith(initialConfig, swcOptions);
     });
 

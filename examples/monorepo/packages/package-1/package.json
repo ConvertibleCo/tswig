@@ -2,6 +2,7 @@
   "name": "package1",
   "version": "1.0.0",
   "scripts": {
-    "build": "swc src -d dist"
+    "prebuild": "node swc.config.js > .swcrc",
+    "build": "npm run prebuild && swc --out-dir dist src"
   }
 }

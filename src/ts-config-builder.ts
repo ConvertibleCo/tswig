@@ -112,6 +112,13 @@ class TypeScriptConfigBuilder {
     }
     Logger.info(`Config file ${this.configFileName} read successfully.`);
     const parsedConfig = this.parseJsonConfigFileContent(config);
+    // It would be nice in the future if we could merge
+    // tsconfig.json and a partial config object passed in
+    // this could allow for more flexibility and remove some issues
+    if(this.tmpFile) {
+      delete parsedConfig.options.baseUrl
+    }
+
     this.cleanupTmpFile();
     return parsedConfig.options;
   }

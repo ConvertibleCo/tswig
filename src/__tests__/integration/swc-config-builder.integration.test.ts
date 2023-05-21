@@ -40,7 +40,7 @@ describe("SwcConfigBuilder Integration", () => {
       },
     };
 
-    const overrideResult = swc.overrides(swcOptions);
+    const overrideResult = swc.overrides(swcOptions).toObject();
 
     expect(overrideResult.jsc).toBeDefined();
     expect(overrideResult.jsc!.transform).toBeDefined();

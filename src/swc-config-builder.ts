@@ -4,15 +4,20 @@ import {SWCConversionError, SWCOverrideError} from "./errors";
 import {deepMerge, moduleKindToSWC, scriptTargetToSWC, Logger} from "./utils";
 
 
+/**
+ * @typedef {Object} SWCOptions - The options for the SwcConfigBuilder.
+ * @property {any} swc - The SwcConfigBuilder options.
+ */
 interface SWCOptions {
   swc: any;
 }
 
 /**
  * `SwcConfigBuilder` class to convert TypeScript configuration to SwcConfigBuilder configuration
+ * @class
  */
 class SwcConfigBuilder {
-  private readonly _swc: any;
+  private _swc: any;
 
   /**
    * Creates an instance of `SwcConfigBuilder`.
@@ -221,22 +226,6 @@ class SwcConfigBuilder {
         });
       }
 
-      if (tsconfig.strict || tsconfig.strictNullChecks) {
-        config = deepMerge(config, {
-          jsc: {
-            transform: {
-              optimizer: {
-                globals: {
-                  vars: {
-                    __NULLABLE_CHECK__: true,
-                  },
-                },
-              },
-            },
-          },
-        });
-      }
-
       if (tsconfig.allowSyntheticDefaultImports && config.module?.type !== "systemjs" && !config.module?.noInterop) {
         config = deepMerge(config, {
           module: {
@@ -296,7 +285,7 @@ class SwcConfigBuilder {
    * Overrides the SwcConfigBuilder configuration with additional SwcConfigBuilder-specific options.
    *
    * @param {any} swcOptions - Additional SwcConfigBuilder-specific options to include.
-   * @returns {any} - The overridden SwcConfigBuilder configuration.
+   * @returns {SwcConfigBuilder} - The overridden SwcConfigBuilder configuration.
    * @throws {SWCOverrideError} - If an error occurs during the override process.
    * @example
    * const swcOptions = {
@@ -310,18 +299,49 @@ class SwcConfigBuilder {
    * };
    * const overriddenConfig = swcConfig.overrides(swcOptions);
    */
-  overrides(swcOptions: any = {}): SWCTypes.Options {
+  overrides(swcOptions: any = {}): this {
     try {
       Logger.info("Merging SwcConfigBuilder options...");
       const result = deepMerge(this._swc, swcOptions);
       Logger.info("Conversion complete.");
-      return result;
+      this._swc = result;
+      return this
     } catch (error) {
       Logger.error("Failed to override Swc configuration");
       throw new SWCOverrideError(
         `Failed to override SWC configuration: ${(error as Error).message}`,
       );
     }
+  }
+
+  /**
+   * Converts the internal _swc property to an object.
+   * This method is helpful when we need to directly access the SWC configuration data in a structured format.
+   * It enables the utilization of the SWC configuration data within other parts of the application that may require this information as a JSON object.
+   *
+   * @returns {SWCTypes.Options} - The _swc property as an object.
+   * @example
+   * const swcConfig = new SwcConfigBuilder({ swc: generatedSwcConfig });
+   * const swcObject = swcConfig.toObject();
+   * console.log(swcObject.module.type); // Access module type in the SWC configuration
+   */
+  toObject(): SWCTypes.Options {
+    return this._swc;
+  }
+
+  /**
+   * Converts the internal _swc property to a string.
+   * This method is beneficial when we need to represent the SWC configuration as a string, for example, when creating .swcrc files.
+   * The resulting string is a JSON formatted string with indents for readability.
+   *
+   * @returns {string} - The _swc property as a string.
+   * @example
+   * const swcConfig = new SwcConfigBuilder({ swc: generatedSwcConfig });
+   * const swcString = swcConfig.toString();
+   * console.log(swcString); // Prints SWC configuration as a formatted JSON string
+   */
+  toString(): string {
+    return JSON.stringify(this._swc, null, 2);
   }
 }
 

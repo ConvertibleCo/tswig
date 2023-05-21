@@ -3,6 +3,10 @@
   "version": "1.0.0",
   "private": false,
   "scripts": {
-    "build": "swc --out-dir dist src"
+    "prebuild": "node swc.config.js > .swcrc",
+    "build": "npm run prebuild && swc --out-dir dist src"
+  },
+  "devDependencies": {
+    "typescript": "^5.0.4"
   }
 }

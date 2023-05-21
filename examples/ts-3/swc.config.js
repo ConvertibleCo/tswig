@@ -1,3 +1,4 @@
 const tswig = require("../../lib")
 
-module.exports = tswig.Covert()
+console.log(tswig.convert().asJSONString())
+
