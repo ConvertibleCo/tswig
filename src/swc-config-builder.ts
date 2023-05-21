@@ -273,6 +273,10 @@ class SwcConfigBuilder {
   static fromTsConfig(
     tsconfig: ts.CompilerOptions,
   ): SwcConfigBuilder {
+    if(!Boolean(tsconfig) || !Object.keys(tsconfig).length) {
+      Logger.error("No TypeScript configuration provided to SwcConfigBuilder.fromTsConfig()")
+      throw new SWCConversionError("No TypeScript configuration provided");
+    }
     try {
       Logger.info("Starting swc conversion...");
       return new SwcConfigBuilder({

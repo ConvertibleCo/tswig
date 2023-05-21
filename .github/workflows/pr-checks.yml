@@ -42,7 +42,14 @@ jobs:
           fail_ci_if_error: true
 
       - name: Build package
-        run: pnpm run build
+        run: pnpm run build #this should also prepackage so that the package is ready to be published
+
+
+      - name: Archive production artifacts
+        uses: actions/upload-artifact@v3
+        with:
+          name: tswig-built
+          path: lib
 
   e2e:
     needs: test
@@ -50,35 +57,35 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        node-version: [14.x, 16.x, 18.x, 20.x]
-        typescript-version: ["3.0.3", "3.1.8", "3.2.4", "3.3.3", "3.4.5", "3.5.3", "3.6.5", "3.7.7", "3.8.3", "3.9.10", "4.0.8", "4.1.6", "4.2.4", "4.3.5", "4.4.4", "4.5.5", "4.6.4", "4.7.4", "4.8.4", "4.9.5", "5.0.4"]
+        node-version: [ 14.x, 16.x, 18.x, 20.x ]
+        typescript-version: [ "3.0.3", "3.1.8", "3.2.4", "3.3.3", "3.4.5", "3.5.3", "3.6.5", "3.7.7", "3.8.3", "3.9.10", "4.0.8", "4.1.6", "4.2.4", "4.3.5", "4.4.4", "4.5.5", "4.6.4", "4.7.4", "4.8.4", "4.9.5", "5.0.4" ]
 
     steps:
       - uses: actions/checkout@v3
+
+      - name: Download build artifacts
+        uses: actions/download-artifact@v3
+        with:
+          name: tswig-built
 
       - name: Use Node.js ${{ matrix.node-version }}
         uses: actions/setup-node@v3
         with:
           node-version: ${{ matrix.node-version }}
 
-      ## See PNPM Version Matrix: https://pnpm.io/installation#compatibility
-      - name: Install pnpm
+      - name: Determine PNPM version
+        id: pnpm-version
         run: |
-          if [[ "${{ matrix.node-version }}" == "14.x" ]]; then
-            curl -f https://get.pnpm.io/v7.js | node - add --global pnpm
-          else
-            curl -f https://get.pnpm.io/v8.js | node - add --global pnpm
-          fi
-      
+          echo "::set-output name=version::$(if [[ "${{ matrix.node-version }}" == "14.x" ]]; then echo "7"; else echo "8"; fi)"
+
+      - uses: pnpm/action-setup@v2
+        with:
+          version: ${{ steps.pnpm-version.outputs.version }}
 
       - name: Install dependencies
         run: pnpm install
 
-      - name: Install Typescript ${{ matrix.typescript-version }}
-        run: pnpm add typescript@${{ matrix.typescript-version }} --no-save
-
-      - name: Install built package
-        run: pnpm install path-to-your-package.tgz
-
       - name: Run e2e tests
+        env:
+          TSWIG_TS_VERSION: ${{ matrix.typescript-version }}
         run: pnpm run test:e2e

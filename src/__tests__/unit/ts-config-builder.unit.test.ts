@@ -25,14 +25,16 @@ describe("TypeScriptConfigBuilder", () => {
   let writeFileSyncSpy: jest.SpyInstance;
   let unlinkSyncSpy: jest.SpyInstance;
   let tmpdirSpy: jest.SpyInstance;
-  let parseJsonSourceFileConfigFileContentSpy: jest.SpyInstance;
+  let parseJsonConfigFileContentSpy: jest.SpyInstance;
+  let existsSyncSpy: jest.SpyInstance;
 
   beforeEach(() => {
     readConfigFileSpy = jest.spyOn(ts, "readConfigFile");
     writeFileSyncSpy = jest.spyOn(fs, "writeFileSync");
     unlinkSyncSpy = jest.spyOn(fs, "unlinkSync");
     tmpdirSpy = jest.spyOn(os, "tmpdir");
-    parseJsonSourceFileConfigFileContentSpy = jest.spyOn(ts, "parseJsonSourceFileConfigFileContent");
+    parseJsonConfigFileContentSpy = jest.spyOn(ts, "parseJsonConfigFileContent");
+    existsSyncSpy = jest.spyOn(fs, "existsSync");
   });
 
   afterEach(() => {
@@ -40,7 +42,8 @@ describe("TypeScriptConfigBuilder", () => {
     writeFileSyncSpy.mockClear();
     unlinkSyncSpy.mockClear();
     tmpdirSpy.mockClear();
-    parseJsonSourceFileConfigFileContentSpy.mockClear();
+    parseJsonConfigFileContentSpy.mockClear();
+    existsSyncSpy.mockClear();
   });
 
   it("constructs with default parameters", () => {
@@ -71,7 +74,7 @@ describe("TypeScriptConfigBuilder", () => {
   });
 
   it("loadConfigurations returns parsed configurations", () => {
-    const builder = new TypeScriptConfigBuilder();
+    readConfigFileSpy.mockReturnValue({ config: { compilerOptions: { module: "commonjs", target: "es2016", strict: true }}});
 
     const parsedConfig = {
       options: {
@@ -81,7 +84,9 @@ describe("TypeScriptConfigBuilder", () => {
       },
     };
 
-    parseJsonSourceFileConfigFileContentSpy.mockReturnValue(parsedConfig);
+    parseJsonConfigFileContentSpy.mockReturnValue(parsedConfig);
+
+    const builder = new TypeScriptConfigBuilder();
 
     const options = builder.loadConfigurations();
 
@@ -93,7 +98,22 @@ describe("TypeScriptConfigBuilder", () => {
   });
 
   it("getReferences returns parsed file references", () => {
-    const builder = new TypeScriptConfigBuilder();
+
+    existsSyncSpy.mockReturnValue(true);
+
+    readConfigFileSpy.mockReturnValue({
+      config: {
+        compilerOptions: {
+          module: "commonjs",
+          target: "es2016",
+          strict: true,
+        },
+        references: [
+          { path: "path/to/reference1" },
+          { path: "path/to/reference2" },
+        ],
+      },
+    });
 
     const mockConfig = {
       options: {
@@ -117,11 +137,14 @@ describe("TypeScriptConfigBuilder", () => {
       ],
     };
 
-    parseJsonSourceFileConfigFileContentSpy.mockReturnValue(mockConfig);
+    parseJsonConfigFileContentSpy.mockReturnValue(mockConfig);
 
+    const builder = new TypeScriptConfigBuilder();
     const references = builder.getReferences();
 
     expect(references).toBeDefined();
+    expect(readConfigFileSpy).toHaveBeenCalled()
+    expect(parseJsonConfigFileContentSpy).toHaveBeenCalled()
     expect(Array.isArray(references)).toBe(true);
     expect(references).toEqual(["src/file1.ts", "src/file2.ts"]);
   });
@@ -137,7 +160,7 @@ describe("TypeScriptConfigBuilder", () => {
 
   it("throws TypeScriptConfigBuilderError when parsing json config fails", () => {
     const builder = new TypeScriptConfigBuilder();
-    parseJsonSourceFileConfigFileContentSpy.mockImplementation(() => { throw new Error("Cannot parse config file"); });
+    parseJsonConfigFileContentSpy.mockImplementation(() => { throw new Error("Cannot parse config file"); });
 
     expect(() => builder.loadConfigurations()).toThrow(TypeScriptConfigBuilderError);
     expect(() => builder.getReferences()).toThrow(TypeScriptConfigBuilderError);
@@ -160,7 +183,7 @@ describe("TypeScriptConfigBuilder", () => {
       },
     };
 
-    parseJsonSourceFileConfigFileContentSpy.mockReturnValue(parsedConfig);
+    parseJsonConfigFileContentSpy.mockReturnValue(parsedConfig);
 
     unlinkSyncSpy.mockImplementation(() => { return "tmpfile" })
 
@@ -182,7 +205,7 @@ describe("TypeScriptConfigBuilder", () => {
       },
     };
 
-    parseJsonSourceFileConfigFileContentSpy.mockReturnValue(parsedConfig);
+    parseJsonConfigFileContentSpy.mockReturnValue(parsedConfig);
 
 
     const builder = new TypeScriptConfigBuilder(config);

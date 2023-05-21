@@ -11,7 +11,7 @@
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
     "snyk": "snyk",
-    "test": "jest",
+    "test": "pnpm run test:unit && pnpm run test:integration",
     "test:watch": "jest --watch",
     "test:coverage": "pnpm run test:unit --coverage",
     "test:unit": "jest --testMatch='**/__tests__/unit/**/*.unit.test.(ts|tsx)'",

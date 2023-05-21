@@ -1,0 +1,7 @@
+{
+  "name": "ts-3",
+  "version": "1.0.0",
+  "scripts": {
+    "build": "swc --out-dir dist src"
+  }
+}

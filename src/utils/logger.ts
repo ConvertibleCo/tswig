@@ -22,7 +22,9 @@ class Logger {
    * @param {string} message - The error message to be logged.
    */
   static error(message: string): void {
-    console.error(message);
+    if (Logger.verbose) {
+      console.error(message);
+    }
   }
 
   /**

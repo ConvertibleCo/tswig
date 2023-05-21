@@ -36,10 +36,18 @@ describe("Logger", () => {
   });
 
   describe("error", () => {
-    it("should log message to console.error", async () => {
+    it("should log message to console.error when verbose is true", async () => {
+      process.env["TSWIG_VERBOSE"] = "true";
       const Logger = (await import("../../logger")).default
       Logger.error("test message");
       expect(consoleErrorSpy).toHaveBeenCalledWith("test message");
+    });
+
+    it("should log message to console.error when verbose is false", async () => {
+      process.env["TSWIG_VERBOSE"] = "false";
+      const Logger = (await import("../../logger")).default
+      Logger.error("test message");
+      expect(consoleErrorSpy).not.toHaveBeenCalledWith("test message");
     });
   });
 

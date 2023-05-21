@@ -1,7 +1,7 @@
-import {readConfigFile, sys, parseJsonSourceFileConfigFileContent, TsConfigSourceFile, flattenDiagnosticMessageText} from "typescript";
-import { writeFileSync, unlinkSync } from "fs";
-import {tmpdir} from "os";
-import {join} from "path";
+import { readConfigFile, sys, parseJsonConfigFileContent, flattenDiagnosticMessageText } from "typescript";
+import { writeFileSync, unlinkSync, existsSync } from "fs";
+import { tmpdir } from "os";
+import { join, dirname, basename } from "path";
 import { Logger } from "./utils";
 import { TypeScriptConfigBuilderError, FileSystemError } from "./errors";
 
@@ -35,6 +35,7 @@ class TypeScriptConfigBuilder {
       try {
         writeFileSync(this.tmpFile, JSON.stringify(config), {
           encoding: "utf8",
+          mode: 0o644
         });
         this.configFileName = this.tmpFile;
         Logger.info(`Temporary file ${this.tmpFile} created.`);
@@ -65,7 +66,17 @@ class TypeScriptConfigBuilder {
    * @param {any} config - The configuration object.
    * @returns {ParsedCommandLine} The parsed command-line options.
    */
-  private parseJsonConfigFileContent(config: TsConfigSourceFile) {
+  private parseJsonConfigFileContent(config: any) {
+    const dir = dirname(this.configFileName);
+    const base = basename(this.configFileName)
+    // Check if the referenced paths exist
+    const references = config.references || [];
+    for (const reference of references) {
+      const referencePath = join(dir, reference.path);
+      if (!existsSync(referencePath)) {
+        throw new TypeScriptConfigBuilderError(`Referenced path '${referencePath}' does not exist.`);
+      }
+    }
     try {
       const host = {
         useCaseSensitiveFileNames: sys.useCaseSensitiveFileNames,
@@ -73,12 +84,12 @@ class TypeScriptConfigBuilder {
         fileExists: sys.fileExists,
         readFile: sys.readFile,
       };
-      return parseJsonSourceFileConfigFileContent(
+      return parseJsonConfigFileContent(
         config,
         host,
-        "./",
+        dir,
         undefined,
-        this.configFileName,
+        base,
       );
     } catch (err) {
       Logger.error("Error parsing the config file content.");
