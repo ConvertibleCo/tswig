@@ -4,8 +4,5 @@
   "scripts": {
     "build": "npm run build-package --prefix packages/package1 && npm run build-package --prefix packages/package2",
     "build-package": "npm run build --if-present"
-  },
-  "devDependencies": {
-    "typescript": "^5.0.4"
   }
 }

@@ -1,4 +1,4 @@
-const tswig = require("../../lib")
+const { convert } = require("../../lib")
 
-console.log(tswig.convert().asJSONString())
+console.log(convert().toString())
 

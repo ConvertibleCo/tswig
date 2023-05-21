@@ -1,4 +1,4 @@
-const tswig = require("../../lib");
+const { convert } = require("../../lib")
 
 const tsconfig = {
   "compilerOptions": {
@@ -40,5 +40,5 @@ const swcOptions = {
     "minify": true
   };
 
+console.log(convert({tsconfig, swcOptions}).toString())
 
-console.log(tswig.convert(tsconfig, swcOptions).asJSONString())

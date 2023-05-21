@@ -223,6 +223,8 @@ web_modules/
 
 # Output of 'npm pack'
 *.tgz
+# Unzipped output of 'npm pack'
+package/
 
 # Yarn Integrity file
 .yarn-integrity

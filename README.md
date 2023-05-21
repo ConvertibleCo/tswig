@@ -9,7 +9,7 @@
 
 ## Why Use `tswig`?
 
-[SWC]("https://github.com/swc-project/swc") is a super-fast JavaScript/TypeScript compiler written in Rust. It's a great alternative to TypeScript, especially for large projects. However, SWC's configuration is different from TypeScript's, and manually converting your TSConfig to SWC's configuration can be a tedious and error-prone process. `tswig` automates this process, allowing you to focus on your code instead of your configuration. It also provides a convenient way to transition from TypeScript to SWC, and to experiment with SWC without having to change your existing configuration.
+[SWC]("https://github.com/swc-project/swc") is a super-fast JavaScript/TypeScript compiler written in Rust. It's a great alternative to TypeScript, especially for large projects. However, SWC's configuration is different from TypeScript's, and manually converting your tsconfig to SWC's configuration can be a tedious and error-prone process. `tswig` automates this process, allowing you to focus on your code instead of your configuration. It also provides a convenient way to transition from TypeScript to SWC, and to experiment with SWC without having to change your existing configuration.
 
 ## Features
 
@@ -29,6 +29,9 @@ If your TypeScript configuration uses project references, the converter can gene
 
 5. **Verbose Mode:**
 For detailed insight into the conversion process, a verbose mode is available that provides comprehensive logging.
+
+6. **Lean and Secure Conversion:**
+Our converter operates without introducing additional dependencies. By utilizing your existing TypeScript setup, we prioritize a streamlined process that enhances security by minimizing potential risks in your build.
 
 ## Installation
 
@@ -50,7 +53,10 @@ pnpm add @convertible/tswig --save-dev
 // swc.config.js
 const tswig = require('@convertible/tswig');
 
-module.exports = tswig.Convert();
+const config = tswig.Convert();
+
+console.log(config.toString);
+// Output: a JSON string of the SWC configuration!
 ```
 
 `tswig` is also seriously flexible.
@@ -59,8 +65,8 @@ module.exports = tswig.Convert();
 // swc.config.js
 const tswig = require('@convertible/tswig');
 
-module.exports = tswig.Convert({
-    tsConfig: './tsconfig.json',
+const config = tswig.Convert({
+    tsconfig: './tsconfig.json',
     swcOptions: {
         jsc: {
             parser: {
@@ -88,6 +94,9 @@ module.exports = tswig.Convert({
         },
     },
 });
+
+console.log(config.toString);
+// Output: a JSON string of the SWC configuration!
 ```
 
 ## Examples
@@ -95,14 +104,14 @@ module.exports = tswig.Convert({
 To see complete examples of `tswig` in action, check out the [examples](./examples) folder. These are the same projects we use to run our e2e tests.
 
 ```
-examples
-    ├── ts-3
-    ├── ts-4
-    ├── ts-5
-    ├── monorepo
-    ├── project-references
-    ├── bazel
-    └── complex-overrides
+examples/
+    ├── ts-3/
+    ├── ts-4/
+    ├── ts-5/
+    ├── monorepo/ // comming soon
+    ├── project-references/ // comming soon
+    ├── bazel/ // comming soon
+    └── complex-overrides/
 ```
 
 ## Assumptions and Inference

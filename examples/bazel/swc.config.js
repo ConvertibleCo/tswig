@@ -1,3 +1,3 @@
-const tswig = require("../../lib")
+const { convert } = require("../../lib")
 
-module.exports = tswig.convert()
+console.log(convert().toString())

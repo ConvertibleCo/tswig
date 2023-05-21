@@ -1,7 +1,7 @@
-import fs from 'fs';
-import path from 'path';
+import * as fs from 'fs';
+import * as path from 'path';
 import { exec } from 'child_process';
-import crypto from 'crypto';
+import * as crypto from 'crypto';
 import { globSync } from 'glob';
 
 // Helper function to execute a shell command
@@ -37,7 +37,7 @@ function hashDirectoryContent(directoryPath: string): string {
 
 // Helper function to get TypeScript version from environment variable
 function getTypeScriptVersion(): string {
-  return process.env["TSWIG_E2E_TS_VERSION"] || '5.0.4';
+  return process.env["TSWIG_TS_VERSION"] || '5.0.4';
 }
 
 describe('End-to-End Tests for tswig', () => {
@@ -52,6 +52,16 @@ describe('End-to-End Tests for tswig', () => {
   // Run a test for each mock project
   mockProjects.forEach((mockProject) => {
     const projectPath = path.join(mockProjectsPath, mockProject);
+
+    afterEach(async () => {
+      // make sure we remove typescript from the mock projects
+      // in non CI envs.
+      if(process.env["GITHUB_ACTIONS"] !== "true") {
+        // uninstall typescript
+        const uninstallCmd = `cd ${projectPath} && npm uninstall typescript`;
+        await execShellCommand(uninstallCmd);
+      }
+    })
 
     it(`should correctly convert TypeScript to JavaScript in ${mockProject}`, async () => {
       // Install the package and run the build command in the mock project

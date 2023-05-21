@@ -4,8 +4,5 @@
   "scripts": {
     "prebuild": "node swc.config.js > .swcrc",
     "build": "npm run prebuild && swc --out-dir dist src"
-  },
-  "devDependencies": {
-    "typescript": "^5.0.4"
   }
 }

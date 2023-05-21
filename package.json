@@ -3,6 +3,7 @@
   "version": "0.0.1",
   "description": "tswig is a utility to convert TypeScript configurations (tsconfig) to SWC configurations, making it easier to transition from TypeScript to SWC. It supports intelligent 1:1 conversion, SWC-specific options, and TypeScript project references.",
   "main": "lib/index.js",
+  "types": "lib/types/index.d.ts",
   "scripts": {
     "clean": "rm -rf lib",
     "swc:build": "swc --out-dir lib src",
@@ -70,10 +71,16 @@
     ".": {
       "import": "./lib/index.mjs",
       "require": "./lib/index.js",
-      "types": "./lib/index.d.ts"
+      "types": "./lib/types/index.d.ts"
     }
   },
   "peerDependencies": {
     "typescript": "^3.0.1"
-  }
+  },
+  "files": [
+    "lib/",
+    "README.md",
+    "LICENSE",
+    "package.json"
+  ]
 }
