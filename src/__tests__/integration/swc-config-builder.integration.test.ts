@@ -43,14 +43,17 @@ describe("SwcConfigBuilder Integration", () => {
     const overrideResult = swc.overrides(swcOptions).toObject();
 
     expect(overrideResult.jsc).toBeDefined();
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion -- We know this is defined
     expect(overrideResult.jsc!.transform).toBeDefined();
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion -- We know this is defined
     expect(overrideResult.jsc!.transform!.react).toBeDefined();
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion -- We know this is defined
     expect(overrideResult.jsc!.transform!.react!.throwIfNamespace).toBe(true);
   });
 
   it("should throw an error if an exception occurs during the conversion and override process", () => {
-    const invalidTsConfig = undefined
-    //@ts-expect-error
-    expect(() => { SwcConfigBuilder.fromTsConfig(invalidTsConfig) }).toThrowError(SWCConversionError);
+    const invalidTsConfig = undefined;
+    //@ts-expect-error - Testing invalid input
+    expect(() => { SwcConfigBuilder.fromTsConfig(invalidTsConfig); }).toThrowError(SWCConversionError);
   });
 });

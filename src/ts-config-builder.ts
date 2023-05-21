@@ -35,7 +35,7 @@ class TypeScriptConfigBuilder {
       try {
         writeFileSync(this.tmpFile, JSON.stringify(config), {
           encoding: "utf8",
-          mode: 0o644
+          mode: 0o644,
         });
         this.configFileName = this.tmpFile;
         Logger.info(`Temporary file ${this.tmpFile} created.`);
@@ -68,7 +68,7 @@ class TypeScriptConfigBuilder {
    */
   private parseJsonConfigFileContent(config: any) {
     const dir = dirname(this.configFileName);
-    const base = basename(this.configFileName)
+    const base = basename(this.configFileName);
     // Check if the referenced paths exist
     const references = config.references || [];
     for (const reference of references) {
@@ -116,7 +116,7 @@ class TypeScriptConfigBuilder {
     // tsconfig.json and a partial config object passed in
     // this could allow for more flexibility and remove some issues
     if(this.tmpFile) {
-      delete parsedConfig.options.baseUrl
+      delete parsedConfig.options.baseUrl;
     }
 
     this.cleanupTmpFile();

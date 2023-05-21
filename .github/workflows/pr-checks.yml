@@ -26,11 +26,14 @@ jobs:
       - name: Install dependencies
         run: pnpm install
 
-      - name: Run unit and integration tests
-        run: pnpm run test:unit && pnpm run test:integration
-
       - name: Run tests with coverage
         run: pnpm run test:coverage
+
+      - name: Run integration tests
+        run: pnpm run test:integration
+
+      - name: Run lint
+        run: pnpm run lint
 
       - name: Upload coverage to Codecov
         uses: codecov/codecov-action@v3
@@ -38,8 +41,9 @@ jobs:
           token: ${{ secrets.CODECOV_TOKEN }}
           file: ./coverage/lcov.info
           flags: unittests
-          name: codecov-umbrella
+          name: tswig-coverage
           fail_ci_if_error: true
+          verbose: true
 
       - name: Build package
         run: pnpm run build #this should also prepackage so that the package is ready to be published

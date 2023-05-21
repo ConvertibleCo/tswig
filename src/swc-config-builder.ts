@@ -262,8 +262,8 @@ class SwcConfigBuilder {
   static fromTsConfig(
     tsconfig: ts.CompilerOptions,
   ): SwcConfigBuilder {
-    if(!Boolean(tsconfig) || !Object.keys(tsconfig).length) {
-      Logger.error("No TypeScript configuration provided to SwcConfigBuilder.fromTsConfig()")
+    if(!tsconfig || !Object.keys(tsconfig).length) {
+      Logger.error("No TypeScript configuration provided to SwcConfigBuilder.fromTsConfig()");
       throw new SWCConversionError("No TypeScript configuration provided");
     }
     try {
@@ -305,7 +305,7 @@ class SwcConfigBuilder {
       const result = deepMerge(this._swc, swcOptions);
       Logger.info("Conversion complete.");
       this._swc = result;
-      return this
+      return this;
     } catch (error) {
       Logger.error("Failed to override Swc configuration");
       throw new SWCOverrideError(

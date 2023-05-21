@@ -1,3 +1,3 @@
-const { convert } = require("../../lib")
+const { convert } = require("../../lib");
 
-console.log(convert().toString())
+console.log(convert().toString());
