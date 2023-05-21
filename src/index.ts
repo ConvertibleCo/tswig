@@ -1,58 +1,42 @@
+import type SWCTypes from "@swc/core";
 import TypeScriptConfigBuilder from "./ts-config-builder";
 import SwcConfigBuilder from "./swc-config-builder";
 
 /**
- * The main entry point for the TSWIG package.
+ * Convert a TypeScript configuration to an equivalent SwcConfigBuilder configuration.
+ *
+ * @static
+ * @param {string | object} [params.tsconfig='tsconfig.json'] - The TypeScript configuration to convert.
+ * @param {SWCTypes.Options} [params.swcOptions={}] - Additional SwcConfigBuilder-specific options to include in the conversion.
+ * @returns {SwcConfigBuilder} - The converted SwcConfigBuilder configuration.
+ * @example
+ * const swcOptions = {
+ *   jsc: {
+ *     transform: {
+ *       react: {
+ *         throwIfNamespace: true,
+ *       },
+ *     },
+ *   },
+ * };
+ * const convertedConfig = tswig.convert({ swcOptions });
+ * console.log(convertedConfig.toString());
+ * // Output: { your converted config }
  */
-class tswig {
-  private static getVerbose(): boolean {
-    return process.env["TSWIG_VERBOSE"] === "true";
+function convert(params : {tsconfig?: string | object, swcOptions?: SWCTypes.Config }): SwcConfigBuilder {
+  // solving TypeError: Cannot read properties of undefined (reading 'tsconfig')
+  if(params === undefined) {
+    params = {};
   }
 
-  /**
-   * Convert a TypeScript configuration to an equivalent SwcConfigBuilder configuration.
-   *
-   * @static
-   * @param {string | object} tsconfig - The TypeScript configuration to convert.
-   * @param {object} [swcOptions={}] - Additional SwcConfigBuilder-specific options to include in the conversion.
-   * @returns {object} - The converted SwcConfigBuilder configuration.
-   * @example
-   * const swcOptions = {
-   *   jsc: {
-   *     transform: {
-   *       react: {
-   *         throwIfNamespace: true,
-   *       },
-   *     },
-   *   },
-   * };
-   * const convertedConfig = tswig.Convert('tsconfig.json', swcOptions);
-   */
-  static Convert(tsconfig: string | object = "tsconfig.json", swcOptions = {}) {
-    const verbose = tswig.getVerbose();
-    const tsConfigBuilder = new TypeScriptConfigBuilder(tsconfig, verbose);
-    const config = tsConfigBuilder.loadConfigurations();
+  const { tsconfig = 'tsconfig.json', swcOptions = {} } = params;
+  const tsConfigBuilder = new TypeScriptConfigBuilder(tsconfig);
+  const config = tsConfigBuilder.loadConfigurations();
 
-
-    return SwcConfigBuilder.fromTsConfig(config, verbose).overrides(
-      swcOptions,
-      verbose,
-    );
-  }
-
-
-  /**
-   * Logs a message if verbose mode is enabled.
-   *
-   * @static
-   * @param {string} message - The message to log.
-   * @param {boolean} verbose - Whether verbose logging is enabled.
-   */
-  static log(message: string, verbose: boolean): void {
-    if (verbose) {
-      console.log(message);
-    }
-  }
+  return SwcConfigBuilder.fromTsConfig(config).overrides(
+    swcOptions,
+  );
 }
 
-export default tswig;
+
+export { convert };

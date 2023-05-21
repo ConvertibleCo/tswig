@@ -21,9 +21,9 @@ module.exports = {
   testEnvironment: "node",
   roots: ["<rootDir>/src"],
   testMatch: [
-    "<rootDir>/src/__tests__/unit/**/*.unit.test.(ts|tsx)",
-    "<rootDir>/src/__tests__/integration/**/*.integration.test.(ts|tsx)",
-    "<rootDir>/src/__tests__/e2e/**/*.e2e.test.(ts|tsx)",
+    "**/__tests__/unit/**/*.unit.test.(ts|tsx)",
+    "**/__tests__/integration/**/*.integration.test.(ts|tsx)",
+    "**/__tests__/e2e/**/*.e2e.test.(ts|tsx)",
   ],
   moduleFileExtensions: ["ts", "tsx", "js", "jsx", "json", "node"],
   moduleNameMapper: {
@@ -34,6 +34,7 @@ module.exports = {
       tsconfig: generateTemporaryTsConfig(),
     }],
   },
+  coverageProvider: "v8",
   collectCoverage: false,
   coverageDirectory: "<rootDir>/coverage",
   collectCoverageFrom: [

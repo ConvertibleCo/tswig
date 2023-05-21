@@ -1,15 +1,17 @@
-# `tswig` - TypeScript to SWC Config Converter [NOT STABLE]
-[![npm version](https://badge.fury.io/js/swc-config-converter.svg)](https://badge.fury.io/js/swc-config-converter)
-[![Build Status](https://travis-ci.com/swc-project/swc-config-converter.svg?branch=master)](https://travis-ci.com/swc-project/swc-config-converter)
-[![Coverage Status](https://coveralls.io/repos/github/swc-project/swc-config-converter/badge.svg?branch=master)](https://coveralls.io/github/swc-project/swc-config-converter?branch=master)
-[![License](https://img.shields.io/badge/license-MIT-blue.svg)]()
-[![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)]()
+# `tswig` - TypeScript to SWC Config Converter
+
+[//]: # ([![npm version]&#40;https://badge.fury.io/js/swc-config-converter.svg&#41;]&#40;https://badge.fury.io/js/swc-config-converter&#41;)
+
+[//]: # ([![Build Status]&#40;https://travis-ci.com/swc-project/swc-config-converter.svg?branch=master&#41;]&#40;https://travis-ci.com/swc-project/swc-config-converter&#41;)
+[![Coverage Status](https://img.shields.io/codecov/c/github/ConvertibleCo/tswig)](https://img.shields.io/codecov/c/github/ConvertibleCo/tswig)
+[![License](https://img.shields.io/badge/license-MIT-blue.svg)](./LICENSE)
+[![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](./CONTRIBUTING.md)
 
 `tswig` is a powerful utility that translates TypeScript configuration files (`tsconfig.json`) to SWC configuration files. It enables users to transition from TypeScript to SWC while maintaining as much of their original setup as possible, reducing the time and complexity involved in manual conversion. It only has one dependency... typescript >=3.
 
 ## Why Use `tswig`?
 
-[SWC]("https://github.com/swc-project/swc") is a super-fast JavaScript/TypeScript compiler written in Rust. It's a great alternative to TypeScript, especially for large projects. However, SWC's configuration is different from TypeScript's, and manually converting your TSConfig to SWC's configuration can be a tedious and error-prone process. `tswig` automates this process, allowing you to focus on your code instead of your configuration. It also provides a convenient way to transition from TypeScript to SWC, and to experiment with SWC without having to change your existing configuration.
+[SWC]("https://github.com/swc-project/swc") is a super-fast JavaScript/TypeScript compiler written in Rust. It's a great alternative to TypeScript, especially for large projects. However, SWC's configuration is different from TypeScript's, and manually converting your tsconfig to SWC's configuration can be a tedious and error-prone process. `tswig` automates this process, allowing you to focus on your code instead of your configuration. It also provides a convenient way to transition from TypeScript to SWC, and to experiment with SWC without having to change your existing configuration.
 
 ## Features
 
@@ -30,61 +32,92 @@ If your TypeScript configuration uses project references, the converter can gene
 5. **Verbose Mode:**
 For detailed insight into the conversion process, a verbose mode is available that provides comprehensive logging.
 
+6. **Lean and Secure Conversion:**
+Our converter operates without introducing additional dependencies. By utilizing your existing TypeScript setup, we prioritize a streamlined process that enhances security by minimizing potential risks in your build.
+
 ## Installation
 
 ```bash
-  npm install @convertible/tswig --save-dev
+npm install @convertible/tswig --save-dev
 ```
 ```bash
-  yarn add @convertible/tswig --dev
+yarn add @convertible/tswig --dev
 ```
 ```bash
-  pnpm add @convertible/tswig --save-dev
+pnpm add @convertible/tswig --save-dev
 ```
 
 ## Usage
 
-### Conversion
+`tswig` is seriously simple.
+
 ```javascript
 // swc.config.js
 const tswig = require('@convertible/tswig');
 
-const pathToTsconfig = './tsconfig.json';
+const config = tswig.Convert();
 
-const swcOptions = {
-    // Any additional SWC-specific options
-};
-
-process.env.TSWIG_VERBOSE = true; // Set to true for verbose logging
-
-const swcConfig = tswig.Convert(pathToTsconfig, swcOptions);
-
-module.exports = swcConfig;
-
-----
-
-// alternatively you can pass a parsed tsconfig object
-const tsconfig = {
-    // your tsconfig object
-}
-
-const swcConfig = tswig.Convert(tsconfig, swcOptions);
+console.log(config.toString);
+// Output: a JSON string of the SWC configuration!
 ```
-### Generating Configs for Project References
-The Generate method returns an object where each key is a project reference path and its value is the corresponding SWC configuration.
+
+`tswig` is also seriously flexible.
 
 ```javascript
-const configs = tswig.Generate(tsconfig, swcOptions, verbose);
+// swc.config.js
+const tswig = require('@convertible/tswig');
 
-for (const [path, config] of Object.entries(configs)) {
-    console.log(`SWC config for ${path}:`, config);
-    // you can write the config to a file, or use it in any other way
-    // e.g. fs.writeFileSync(`${path}/swc.config.json`, JSON.stringify(config, null, "\t"));
-}
+const config = tswig.Convert({
+    tsconfig: './tsconfig.json',
+    swcOptions: {
+        jsc: {
+            parser: {
+                syntax: 'typescript',
+                tsx: true,
+                dynamicImport: true,
+                decorators: true,
+                privateMethod: true,
+                classPrivateProperty: true,
+                exportDefaultFrom: true,
+                exportNamespaceFrom: true,
+                nullishCoalescing: true,
+                optionalChaining: true,
+            },
+            transform: {
+                react: {
+                    runtime: 'automatic',
+                    pragma: 'React.createElement',
+                    pragmaFrag: 'React.Fragment',
+                    throwIfNamespace: true,
+                    development: false,
+                    useBuiltins: false,
+                },
+            },
+        },
+    },
+});
+
+console.log(config.toString);
+// Output: a JSON string of the SWC configuration!
+```
+
+## Examples
+
+To see complete examples of `tswig` in action, check out the [examples](./examples) folder. These are the same projects we use to run our e2e tests.
+
+```
+examples/
+    ├── ts-3/
+    ├── ts-4/
+    ├── ts-5/
+    ├── monorepo/ // comming soon
+    ├── project-references/ // comming soon
+    ├── bazel/ // comming soon
+    └── complex-overrides/
 ```
 
 ## Assumptions and Inference
-`tswig` is designed to produce a SWC configuration that's as close as possible to the provided TSConfig. However, not all TSConfig options have direct equivalents in SWC. In these cases, the converter uses related TSConfig options and SWC's features to make intelligent assumptions.
+`tswig` is designed to produce a SWC configuration that's as close as possible to the provided TSConfig. However, not all TSConfig options have direct equivalents in SWC. In these cases, the converter uses related TSConfig options and SWC's features to make intelligent assumptions. You can see the complete assumption list with examples in the [assumptions design](./ASSUMPTIONS_INFERENCE.md) file.
 
 Here are a few examples:
 
@@ -103,6 +136,9 @@ We make no assumptions about your runtime environment. If you want to have envir
 We strive to make `tswig` as accurate and helpful as possible. However, due to the differences between TypeScript and SWC, there may be edge cases where the converter's assumptions don't match the user's intentions. If you encounter such cases, we encourage you to provide feedback and contribute to the project.
 
 You can use the swcOptions parameter to provide additional SWC-specific options and override any settings from the TSConfig conversion. This gives you the ultimate control over your SWC configuration.
+
+### Want to contribute?
+If you want to contribute to the project, please read the [contributing guidelines](./CONTRIBUTING.md).
 
 ## Future Enhancements
 

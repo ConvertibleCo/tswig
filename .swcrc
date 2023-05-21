@@ -1,0 +1,35 @@
+{
+  "$schema": "https://json.schemastore.org/swcrc",
+  "env": {
+    "node": true
+  },
+  "jsc": {
+    "preserveAllComments": false,
+    "parser": {
+      "syntax": "typescript",
+      "jsx": false,
+      "dynamicImport": true,
+      "privateMethod": false,
+      "functionBind": false,
+      "exportDefaultFrom": true,
+      "exportNamespaceFrom": false,
+      "decorators": false,
+      "decoratorsBeforeExport": false,
+      "topLevelAwait": false,
+      "importMeta": false,
+      "numericSeparator": true
+    },
+    "target": "es2022",
+    "loose": false,
+    "externalHelpers": false,
+    "keepClassNames": true
+  },
+  "module": {
+    "type": "commonjs",
+    "strict": true,
+    "strictMode": true,
+    "lazy": false,
+    "noInterop": false
+  },
+  "exclude": [".*\\.test.ts$"]
+}

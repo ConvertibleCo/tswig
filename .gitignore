@@ -223,6 +223,8 @@ web_modules/
 
 # Output of 'npm pack'
 *.tgz
+# Unzipped output of 'npm pack'
+package/
 
 # Yarn Integrity file
 .yarn-integrity
@@ -292,5 +294,9 @@ lib/
 
 # Ignore generated files
 tmp.tsconfig.json
+examples/**/.swcrc
+examples/**/dist
+examples/**/node_modules
+examples/**/package-lock.json
 
 ## END TSWIG ##

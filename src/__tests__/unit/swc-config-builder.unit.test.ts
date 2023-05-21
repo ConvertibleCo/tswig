@@ -3,46 +3,6 @@ import SwcConfigBuilder from "../../swc-config-builder";
 import * as utils from "../../utils";
 import { SWCConversionError, SWCOverrideError } from "../../errors";
 
-// Mock the 'typescript' module
-jest.mock("typescript", () => ({
-  ModuleKind: {
-    None: 0,
-    CommonJS: 1,
-    AMD: 2,
-    UMD: 3,
-    System: 4,
-    ES2015: 5,
-    ESNext: 99,
-  },
-  ScriptTarget: {
-    ES3: 0,
-    ES5: 1,
-    ES2015: 2,
-    ES2016: 3,
-    ES2017: 4,
-    ES2018: 5,
-    ES2019: 6,
-    ES2020: 7,
-    ES2021: 8,
-    ESNext: 99,
-    JSON: 100,
-    Latest: 99,
-  },
-  JsxEmit: {
-    None: 0,
-    Preserve: 1,
-    React: 2,
-    ReactNative: 3,
-    ReactJSX: 4,
-    ReactJSXDev: 5,
-  },
-  ModuleResolutionKind: {
-    Classic: 1,
-    NodeJs: 2,
-    Node10: 2,
-  },
-}));
-
 describe("SwcConfigBuilder", () => {
   describe("esModuleInterop", () => {
 
@@ -236,6 +196,64 @@ describe("SwcConfigBuilder", () => {
       });
     });
 
+    it("should return the default React configuration if JSX is enabled with no settings", () => {
+      const tsconfig = {
+        compilerOptions: {
+          jsx: ts.JsxEmit.ReactJSX,
+        },
+      };
+
+      const result = SwcConfigBuilder.reactConfig(tsconfig.compilerOptions);
+
+      expect(result).toEqual({
+        throwIfNamespace: false,
+        development: false,
+        pragma: "React.createElement",
+        pragmaFrag: "React.Fragment",
+        importSource: "",
+        runtime: "automatic",
+      });
+    });
+
+    it("should return return in development if in dev", () => {
+      const tsconfig = {
+        compilerOptions: {
+          jsx: ts.JsxEmit.ReactJSXDev,
+        },
+      };
+
+      const result = SwcConfigBuilder.reactConfig(tsconfig.compilerOptions);
+
+      expect(result).toEqual({
+        throwIfNamespace: false,
+        development: true,
+        pragma: "React.createElement",
+        pragmaFrag: "React.Fragment",
+        importSource: "",
+        runtime: "automatic",
+      });
+    });
+
+    it("should return return in classic jsx is React", () => {
+      const tsconfig = {
+        compilerOptions: {
+          jsx: ts.JsxEmit.React,
+        },
+      };
+
+      const result = SwcConfigBuilder.reactConfig(tsconfig.compilerOptions);
+
+      expect(result).toEqual({
+        throwIfNamespace: false,
+        development: false,
+        pragma: "React.createElement",
+        pragmaFrag: "React.Fragment",
+        importSource: "",
+        runtime: "classic",
+      });
+    });
+
+
     it("should return undefined if JSX is disabled", () => {
       const tsconfig = {
         compilerOptions: {
@@ -245,7 +263,7 @@ describe("SwcConfigBuilder", () => {
 
       const result = SwcConfigBuilder.reactConfig(tsconfig.compilerOptions);
 
-      expect(result).toEqual({})
+      expect(result).toEqual({});
     });
   });
 
@@ -347,9 +365,9 @@ describe("SwcConfigBuilder", () => {
           strictMode: true,
         },
         jsc: {
-        externalHelpers: false,
-        keepClassNames: true,
-        target: "es2018",
+          externalHelpers: false,
+          keepClassNames: true,
+          target: "es2018",
           parser: {
             syntax: "typescript",
             tsx: true,
@@ -368,13 +386,6 @@ describe("SwcConfigBuilder", () => {
               throwIfNamespace: false,
               development: false,
             },
-            optimizer: {
-              globals: {
-                vars: {
-                  __NULLABLE_CHECK__: true,
-                },
-              },
-            },
           },
         },
         sourceMaps: true,
@@ -385,7 +396,7 @@ describe("SwcConfigBuilder", () => {
     it("should throw SwcConfigBuilderConversionError if an error occurs during the conversion process", () => {
       const tsconfig = {
         compilerOptions: {
-          strict: true,
+          allowJs: true,
         },
       };
 
@@ -399,32 +410,6 @@ describe("SwcConfigBuilder", () => {
     });
   });
 
-  describe("log", () => {
-
-    afterEach(() => {
-      jest.restoreAllMocks();
-    });
-
-    it("should log the message if verbose mode is enabled", () => {
-      const verbose = true;
-      const message = "Test message";
-      const consoleSpy = jest.spyOn(console, "log");
-
-      SwcConfigBuilder.log(message, verbose);
-
-      expect(consoleSpy).toHaveBeenCalledWith(message);
-    });
-
-    it("should not log the message if verbose mode is disabled", () => {
-      const verbose = false;
-      const message = "Test message";
-      const consoleSpy = jest.spyOn(console, "log");
-
-      SwcConfigBuilder.log(message, verbose);
-
-      expect(consoleSpy).not.toHaveBeenCalled();
-    });
-  });
 
   describe("fromTsConfig", () => {
     afterEach(() => {
@@ -445,7 +430,6 @@ describe("SwcConfigBuilder", () => {
       expect(result).toBeInstanceOf(SwcConfigBuilder);
       expect(SwcConfigBuilder.generateSwcConfig).toHaveBeenCalledWith(
         tsconfig.compilerOptions,
-        false,
       );
     });
 
@@ -498,9 +482,9 @@ describe("SwcConfigBuilder", () => {
       jest.spyOn(utils, "deepMerge").mockReturnValue(mergedOptions);
 
       const swc = new SwcConfigBuilder({ swc: {} });
-      const result = swc.overrides(swcOptions, false);
+      const result = swc.overrides(swcOptions);
 
-      expect(result).toBe(mergedOptions);
+      expect(result.toObject()).toBe(mergedOptions);
       expect(utils.deepMerge).toHaveBeenCalledWith({}, swcOptions);
     });
 
@@ -514,7 +498,7 @@ describe("SwcConfigBuilder", () => {
       const swc = new SwcConfigBuilder({ swc: {} });
 
       expect(() => {
-        swc.overrides(swcOptions, false);
+        swc.overrides(swcOptions);
       }).toThrowError(SWCOverrideError);
     });
 
@@ -561,9 +545,9 @@ describe("SwcConfigBuilder", () => {
       jest.spyOn(utils, "deepMerge").mockReturnValue(mergedOptions);
 
       const swc = new SwcConfigBuilder({ swc: initialConfig });
-      const result = swc.overrides(swcOptions, false);
+      const result = swc.overrides(swcOptions);
 
-      expect(result).toBe(mergedOptions);
+      expect(result.toObject()).toBe(mergedOptions);
       expect(utils.deepMerge).toHaveBeenCalledWith(initialConfig, swcOptions);
     });
 
@@ -599,9 +583,9 @@ describe("SwcConfigBuilder", () => {
       jest.spyOn(utils, "deepMerge").mockReturnValue(mergedOptions);
 
       const swc = new SwcConfigBuilder({ swc: initialConfig });
-      const result = swc.overrides(swcOptions, false);
+      const result = swc.overrides(swcOptions);
 
-      expect(result).toBe(mergedOptions);
+      expect(result.toObject()).toBe(mergedOptions);
       expect(utils.deepMerge).toHaveBeenCalledWith(initialConfig, swcOptions);
     });
 
@@ -639,7 +623,7 @@ describe("SwcConfigBuilder", () => {
       const swc = new SwcConfigBuilder({ swc: initialConfig });
 
       expect(() => {
-        swc.overrides(swcOptions, false);
+        swc.overrides(swcOptions);
       }).toThrowError(SWCOverrideError);
     });
 
@@ -666,7 +650,7 @@ describe("SwcConfigBuilder", () => {
       const swc = new SwcConfigBuilder({ swc: initialConfig });
 
       expect(() => {
-        swc.overrides(swcOptions, false);
+        swc.overrides(swcOptions);
       }).toThrowError(SWCOverrideError);
     });
   });

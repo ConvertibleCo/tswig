@@ -1,0 +1,9 @@
+{
+  "name": "ts-5",
+  "version": "1.0.0",
+  "private": false,
+  "scripts": {
+    "prebuild": "node swc.config.js > .swcrc",
+    "build": "npm run prebuild && swc --out-dir dist src"
+  }
+}

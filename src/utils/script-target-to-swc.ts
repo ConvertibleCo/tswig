@@ -1,6 +1,27 @@
 import * as ts from "typescript";
 import type SWCTypes from "@swc/core";
 
+/**
+ * Converts TypeScript script target to SWC JscTarget.
+ * @param {ts.ScriptTarget | undefined} scriptTarget - The TypeScript script target.
+ * @returns {SWCTypes.JscTarget} - The corresponding SWC JscTarget.
+ *
+ * @example
+ * // Returns "es5"
+ * scriptTargetToSWC(ts.ScriptTarget.ES5);
+ *
+ * @example
+ * // Returns "es2016"
+ * scriptTargetToSWC(ts.ScriptTarget.ES2016);
+ *
+ * @example
+ * // Returns "esnext"
+ * scriptTargetToSWC(ts.ScriptTarget.Latest);
+ *
+ * @example
+ * // Returns "esnext"
+ * scriptTargetToSWC(undefined);
+ */
 function scriptTargetToSWC(scriptTarget: ts.ScriptTarget | undefined): SWCTypes.JscTarget {
   switch (scriptTarget) {
     case ts.ScriptTarget.ES3:
