@@ -1,1 +1,1 @@
-{"version":3,"sources":["../src/index.ts"],"sourcesContent":["const message: string = \"Hello, world!\";\nconsole.log(message);\n"],"names":["message","console","log"],"mappings":"aAAA,IAAMA,QAAkB,gBACxBC,QAAQC,GAAG,CAACF"}
+{"version":3,"sources":["../src/index.ts"],"sourcesContent":["const message = \"Hello, world!\";\nconsole.log(message);\n"],"names":["message","console","log"],"mappings":"aAAA,IAAMA,QAAU,gBAChBC,QAAQC,GAAG,CAACF"}
