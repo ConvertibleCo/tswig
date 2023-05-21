@@ -49,8 +49,10 @@ describe('End-to-End Tests for tswig', () => {
   // Read TypeScript version from environment variable
   const tsVersion = getTypeScriptVersion();
 
+  // Filter to run only the projects that match the TypeScript version
+  const targetProjects = mockProjects.filter((p) => p.includes("ts") ? p === `ts-${tsVersion[0]}` : true)
   // Run a test for each mock project
-  mockProjects.forEach((mockProject) => {
+  targetProjects.forEach((mockProject) => {
     const projectPath = path.join(mockProjectsPath, mockProject);
 
     afterEach(async () => {

@@ -44,12 +44,14 @@ jobs:
       - name: Build package
         run: pnpm run build #this should also prepackage so that the package is ready to be published
 
+      - name: Tar package
+        run: tar -czvf lib.tar.gz lib
 
       - name: Archive production artifacts
         uses: actions/upload-artifact@v3
         with:
-          name: tswig-built
-          path: lib
+          name: tswig-lib
+          path: lib.tar.gz
 
   e2e:
     needs: test
@@ -66,7 +68,10 @@ jobs:
       - name: Download build artifacts
         uses: actions/download-artifact@v3
         with:
-          name: tswig-built
+          name: tswig-lib
+
+      - name: Extract build artifacts in lib folder
+        run: tar -xzvf lib.tar.gz
 
       - name: Use Node.js ${{ matrix.node-version }}
         uses: actions/setup-node@v3

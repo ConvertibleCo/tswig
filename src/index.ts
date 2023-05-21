@@ -6,9 +6,8 @@ import SwcConfigBuilder from "./swc-config-builder";
  * Convert a TypeScript configuration to an equivalent SwcConfigBuilder configuration.
  *
  * @static
- * @param {Object} options - An object containing TypeScript and SWC configuration.
- * @param {string | object} [options.tsconfig='tsconfig.json'] - The TypeScript configuration to convert.
- * @param {SWCTypes.Options} [options.swcOptions={}] - Additional SwcConfigBuilder-specific options to include in the conversion.
+ * @param {string | object} [params.tsconfig='tsconfig.json'] - The TypeScript configuration to convert.
+ * @param {SWCTypes.Options} [params.swcOptions={}] - Additional SwcConfigBuilder-specific options to include in the conversion.
  * @returns {SwcConfigBuilder} - The converted SwcConfigBuilder configuration.
  * @example
  * const swcOptions = {
@@ -24,7 +23,13 @@ import SwcConfigBuilder from "./swc-config-builder";
  * console.log(convertedConfig.toString());
  * // Output: { your converted config }
  */
-function convert({ tsconfig = "tsconfig.json", swcOptions = {} } : {tsconfig?: string | object, swcOptions?: SWCTypes.Config }): SwcConfigBuilder {
+function convert(params : {tsconfig?: string | object, swcOptions?: SWCTypes.Config }): SwcConfigBuilder {
+  // solving TypeError: Cannot read properties of undefined (reading 'tsconfig')
+  if(params === undefined) {
+    params = {};
+  }
+
+  const { tsconfig = 'tsconfig.json', swcOptions = {} } = params;
   const tsConfigBuilder = new TypeScriptConfigBuilder(tsconfig);
   const config = tsConfigBuilder.loadConfigurations();
 
