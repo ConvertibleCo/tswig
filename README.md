@@ -1,9 +1,11 @@
-# `tswig` - TypeScript to SWC Config Converter [NOT STABLE]
-[![npm version](https://badge.fury.io/js/swc-config-converter.svg)](https://badge.fury.io/js/swc-config-converter)
-[![Build Status](https://travis-ci.com/swc-project/swc-config-converter.svg?branch=master)](https://travis-ci.com/swc-project/swc-config-converter)
-[![Coverage Status](https://coveralls.io/repos/github/swc-project/swc-config-converter/badge.svg?branch=master)](https://coveralls.io/github/swc-project/swc-config-converter?branch=master)
-[![License](https://img.shields.io/badge/license-MIT-blue.svg)]()
-[![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)]()
+# `tswig` - TypeScript to SWC Config Converter
+
+[//]: # ([![npm version]&#40;https://badge.fury.io/js/swc-config-converter.svg&#41;]&#40;https://badge.fury.io/js/swc-config-converter&#41;)
+
+[//]: # ([![Build Status]&#40;https://travis-ci.com/swc-project/swc-config-converter.svg?branch=master&#41;]&#40;https://travis-ci.com/swc-project/swc-config-converter&#41;)
+[![Coverage Status](https://img.shields.io/codecov/c/github/ConvertibleCo/tswig)](https://img.shields.io/codecov/c/github/ConvertibleCo/tswig)
+[![License](https://img.shields.io/badge/license-MIT-blue.svg)](./LICENSE)
+[![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](./CONTRIBUTING.md)
 
 `tswig` is a powerful utility that translates TypeScript configuration files (`tsconfig.json`) to SWC configuration files. It enables users to transition from TypeScript to SWC while maintaining as much of their original setup as possible, reducing the time and complexity involved in manual conversion. It only has one dependency... typescript >=3.
 
