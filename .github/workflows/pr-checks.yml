@@ -1,6 +1,10 @@
 name: PR Checks
 
+# Should run on pull requests and pushes to main
 on:
+  push:
+    branches:
+      - main
   pull_request:
     branches:
       - main
@@ -46,12 +50,15 @@ jobs:
           verbose: true
 
       - name: Build package
+        if: github.event_name == 'pull_request'
         run: pnpm run build #this should also prepackage so that the package is ready to be published
 
       - name: Tar package
+        if: github.event_name == 'pull_request'
         run: tar -czvf lib.tar.gz lib
 
       - name: Archive production artifacts
+        if: github.event_name == 'pull_request'
         uses: actions/upload-artifact@v3
         with:
           name: tswig-lib
@@ -59,6 +66,8 @@ jobs:
 
   e2e:
     needs: test
+    # only run this job when it is a pr and not when it is a push
+    if: github.event_name == 'pull_request'
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
