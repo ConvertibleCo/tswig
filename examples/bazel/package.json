@@ -1,8 +1,0 @@
-{
-  "name": "ts-3",
-  "version": "1.0.0",
-  "scripts": {
-    "prebuild": "node swc.config.js > .swcrc",
-    "build": "npm run prebuild && swc --out-dir dist src"
-  }
-}
