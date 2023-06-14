@@ -5,21 +5,21 @@
  */
 function globToRegex(globPattern: string): RegExp {
   const specialCharsRegex = /[|\\{}()[\]^$+*?.]/g;
-  const escapedPattern = globPattern.replace(specialCharsRegex, '\\$&');
+  const escapedPattern = globPattern.replace(specialCharsRegex, "\\$&");
 
   const wildcardRegex = /\\\*/g;
-  const regexPattern = escapedPattern.replace(wildcardRegex, '[^/]*');
+  const regexPattern = escapedPattern.replace(wildcardRegex, "[^/]*");
 
   const doubleWildcardRegex = /\\\/\\\*\*/g;
-  const regexPatternWithDoubleWildcard = regexPattern.replace(doubleWildcardRegex, '(?:\\/[^/]+)*');
+  const regexPatternWithDoubleWildcard = regexPattern.replace(doubleWildcardRegex, "(?:\\/[^/]+)*");
 
   const singleCharWildcardRegex = /\\\?/g;
-  const regexPatternWithSingleCharWildcard = regexPatternWithDoubleWildcard.replace(singleCharWildcardRegex, '[^/]');
+  const regexPatternWithSingleCharWildcard = regexPatternWithDoubleWildcard.replace(singleCharWildcardRegex, "[^/]");
 
   const directoryWildcardRegex = /\\\*\*\\\//g;
-  const regexPatternWithDirectoryWildcard = regexPatternWithSingleCharWildcard.replace(directoryWildcardRegex, '(?:\\/[^/]+\\/)*(?:\\/[^/]+)?');
+  const regexPatternWithDirectoryWildcard = regexPatternWithSingleCharWildcard.replace(directoryWildcardRegex, "(?:\\/[^/]+\\/)*(?:\\/[^/]+)?");
 
-  return new RegExp(`^${regexPatternWithDirectoryWildcard}$`, 'i');
+  return new RegExp(`^${regexPatternWithDirectoryWildcard}$`, "i");
 }
 
 export default globToRegex;

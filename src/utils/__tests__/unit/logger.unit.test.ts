@@ -22,14 +22,14 @@ describe("Logger", () => {
   describe("info", () => {
     it("should log message to console.info when verbose is true", async () => {
       process.env["TSWIG_VERBOSE"] = "true";
-      const Logger = (await import("../../logger")).default
+      const Logger = (await import("../../logger")).default;
       Logger.info("test message");
       expect(consoleInfoSpy).toHaveBeenCalledWith("test message");
     });
 
     it("should not log message to console.info when verbose is false", async () => {
       process.env["TSWIG_VERBOSE"] = "false";
-      const Logger = (await import("../../logger")).default
+      const Logger = (await import("../../logger")).default;
       Logger.info("test message");
       expect(consoleInfoSpy).not.toHaveBeenCalled();
     });
@@ -38,14 +38,14 @@ describe("Logger", () => {
   describe("error", () => {
     it("should log message to console.error when verbose is true", async () => {
       process.env["TSWIG_VERBOSE"] = "true";
-      const Logger = (await import("../../logger")).default
+      const Logger = (await import("../../logger")).default;
       Logger.error("test message");
       expect(consoleErrorSpy).toHaveBeenCalledWith("test message");
     });
 
     it("should log message to console.error when verbose is false", async () => {
       process.env["TSWIG_VERBOSE"] = "false";
-      const Logger = (await import("../../logger")).default
+      const Logger = (await import("../../logger")).default;
       Logger.error("test message");
       expect(consoleErrorSpy).not.toHaveBeenCalledWith("test message");
     });
@@ -54,14 +54,14 @@ describe("Logger", () => {
   describe("warn", () => {
     it("should log message to console.warn when verbose is true", async () => {
       process.env["TSWIG_VERBOSE"] = "true";
-      const Logger = (await import("../../logger")).default
+      const Logger = (await import("../../logger")).default;
       Logger.warn("test message");
       expect(consoleWarnSpy).toHaveBeenCalledWith("test message");
     });
 
     it("should not log message to console.warn when verbose is false", async () => {
       process.env["TSWIG_VERBOSE"] = "false";
-      const Logger = (await import("../../logger")).default
+      const Logger = (await import("../../logger")).default;
       Logger.warn("test message");
       expect(consoleWarnSpy).not.toHaveBeenCalled();
     });

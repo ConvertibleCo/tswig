@@ -143,8 +143,8 @@ describe("TypeScriptConfigBuilder", () => {
     const references = builder.getReferences();
 
     expect(references).toBeDefined();
-    expect(readConfigFileSpy).toHaveBeenCalled()
-    expect(parseJsonConfigFileContentSpy).toHaveBeenCalled()
+    expect(readConfigFileSpy).toHaveBeenCalled();
+    expect(parseJsonConfigFileContentSpy).toHaveBeenCalled();
     expect(Array.isArray(references)).toBe(true);
     expect(references).toEqual(["src/file1.ts", "src/file2.ts"]);
   });
@@ -171,7 +171,7 @@ describe("TypeScriptConfigBuilder", () => {
 
     tmpdirSpy.mockReturnValue("/tmp");
 
-    writeFileSyncSpy.mockImplementation(() => { return "tmpfile" });
+    writeFileSyncSpy.mockImplementation(() => { return "tmpfile"; });
 
     readConfigFileSpy.mockImplementation(() => ({ config: config }));
 
@@ -185,7 +185,7 @@ describe("TypeScriptConfigBuilder", () => {
 
     parseJsonConfigFileContentSpy.mockReturnValue(parsedConfig);
 
-    unlinkSyncSpy.mockImplementation(() => { return "tmpfile" })
+    unlinkSyncSpy.mockImplementation(() => { return "tmpfile"; });
 
     const builder = new TypeScriptConfigBuilder(config);
     builder.loadConfigurations();
@@ -196,7 +196,7 @@ describe("TypeScriptConfigBuilder", () => {
     const config = { compilerOptions: { module: "commonjs", target: "es6", strict: true }};
     tmpdirSpy.mockReturnValue("/tmp");
     unlinkSyncSpy.mockImplementation(() => { throw new Error("Cannot delete file"); });
-    writeFileSyncSpy.mockImplementation(() => { return "tmpfile" });
+    writeFileSyncSpy.mockImplementation(() => { return "tmpfile"; });
     const parsedConfig = {
       options: {
         module: ts.ModuleKind.CommonJS,

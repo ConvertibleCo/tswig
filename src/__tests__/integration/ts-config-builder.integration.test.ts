@@ -21,8 +21,8 @@ describe("TypeScriptConfigBuilder", () => {
       "allowJs": false,
       "strictNullChecks": true,
       "moduleResolution": "node",
-      "allowSyntheticDefaultImports": true
-    }
+      "allowSyntheticDefaultImports": true,
+    },
   };
 
   beforeEach(() => {

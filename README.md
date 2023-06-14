@@ -57,7 +57,7 @@ const tswig = require('@convertible/tswig');
 
 const config = tswig.Convert();
 
-console.log(config.toString);
+console.log(config.toString());
 // Output: a JSON string of the SWC configuration!
 ```
 
@@ -97,7 +97,7 @@ const config = tswig.Convert({
     },
 });
 
-console.log(config.toString);
+console.log(config.toString());
 // Output: a JSON string of the SWC configuration!
 ```
 

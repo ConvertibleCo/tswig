@@ -29,7 +29,7 @@ function convert(params : {tsconfig?: string | object, swcOptions?: SWCTypes.Con
     params = {};
   }
 
-  const { tsconfig = 'tsconfig.json', swcOptions = {} } = params;
+  const { tsconfig = "tsconfig.json", swcOptions = {} } = params;
   const tsConfigBuilder = new TypeScriptConfigBuilder(tsconfig);
   const config = tsConfigBuilder.loadConfigurations();
 

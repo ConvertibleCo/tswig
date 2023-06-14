@@ -1,4 +1,4 @@
-const { convert } = require("../../lib")
+const { convert } = require("../../lib");
 
 const tsconfig = {
   "compilerOptions": {
@@ -12,33 +12,33 @@ const tsconfig = {
     "esModuleInterop": true,
     "baseUrl": "./src",
     "noUnusedLocals": true,
-    "noUnusedParameters": true
+    "noUnusedParameters": true,
   },
   "include": ["src"],
-  "exclude": ["node_modules", "**/__tests__/*"]
-}
+  "exclude": ["node_modules", "**/__tests__/*"],
+};
 
 
 const swcOptions = {
-    "jsc": {
-      "target": "es2020",
-      "parser": {
-        "syntax": "typescript",
-        "tsx": true
-      },
-      "transform": {
-        "legacyDecorator": true
-      }
+  "jsc": {
+    "target": "es2020",
+    "parser": {
+      "syntax": "typescript",
+      "tsx": true,
     },
-    "module": {
-      "type": "commonjs"
+    "transform": {
+      "legacyDecorator": true,
     },
-    "env": {
-      "node": true
-    },
-    "sourceMaps": true,
-    "minify": true
-  };
+  },
+  "module": {
+    "type": "commonjs",
+  },
+  "env": {
+    "node": true,
+  },
+  "sourceMaps": true,
+  "minify": true,
+};
 
-console.log(convert({tsconfig, swcOptions}).toString())
+console.log(convert({tsconfig, swcOptions}).toString());
 
